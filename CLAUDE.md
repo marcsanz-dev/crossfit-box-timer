@@ -74,14 +74,18 @@ src/
   components/              # React components (kebab-case files)
   i18n/                    # next-intl routing, navigation, request config
   lib/                     # framework-free logic, unit-tested (≥95% coverage enforced)
-    timer/                 # schema (Zod) → timeline (segments + cues) → display state; run clock; format
+    timer/                 # schema (Zod) → timeline (segments + cues) → display state; run clock; session; tone; format; demos
+    audio/                 # cue look-ahead planner and synthesized sound definitions
+  browser/                 # thin browser adapters (Web Audio player, wake lock, fullscreen); covered by e2e + real devices
+  hooks/                   # client hooks (useWorkoutRunner orchestrates the phone timer)
+  components/timer/        # phone timer UI (ready screen, running view, controls, confirm dialog)
+  app/[locale]/t/          # phone routes (dark layout, safe areas); /t/demo/[slug] for demo workouts
   proxy.ts                 # next-intl locale middleware
   global.ts                # next-intl type augmentation
 ```
 
 Planned (see PLAN.md §6):
 
-- `src/lib/audio/`: Web Audio scheduler;
 - `src/lib/auth/`: Better Auth and the `isAllowedCoach` rule;
 - `src/db/`: Drizzle schema;
 - routes `/coach`, `/t`, `/t/[code]`.
@@ -106,4 +110,7 @@ Planned (see PLAN.md §6):
 - **iPhone has no element fullscreen.** Use the Home Screen web app (iOS 26+). Use `navigator.audioSession.type = "playback"` so beeps play in Silent mode.
 - **Stale type errors in `next build`:** if they show up after changing `tsconfig.json`, delete `.next/` (stale `.next/cache/.tsbuildinfo`).
 - **next-intl `createMessagesDeclaration`** generates `messages/*.d.json.ts` (git-ignored). It needs `allowArbitraryExtensions` in `tsconfig.json`.
+- **Phone robustness rule.** Every device unlock (audio, wake lock, fullscreen) is best-effort and wrapped. The clock must start and keep running even if all of them fail.
+- **E2E with fake time.** Use `page.clock.install` + `pauseAt`, then `fastForward` + a short `runFor` (see `advance()` in `e2e/phone-timer.spec.ts`). Playwright's WebKit on Windows has no Web Audio.
+- **Previewing locally:** `.claude/launch.json` (git-ignored) defines `prod` (port 3200) and `dev` (port 3000) for the browser pane. Stop the server before `pnpm build`.
 - **Dependency build scripts** are disabled in `pnpm-workspace.yaml` (`allowBuilds`). Prebuilt binaries are enough.

@@ -47,3 +47,6 @@ next-env.d.ts
 
 # next-intl generated message declarations
 /messages/*.d.json.ts
+
+# local Claude Code launch config
+/.claude/

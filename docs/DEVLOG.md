@@ -112,3 +112,73 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 4. **Enabled `noUncheckedIndexedAccess`** in `tsconfig.json`, so array lookups are typed as possibly `undefined`.
 
 **Checks:** `pnpm check` and `pnpm test:coverage` pass.
+
+---
+
+## Phase 2 — Phone timer (demo workouts) — 2026-10-21
+
+**What I asked**
+
+- Build the full-screen phone timer with a local demo workout and no backend.
+- Scope: sound, wake lock, fullscreen, hidden controls with confirmation, resume after reload, and a layout for portrait and landscape.
+
+**What Claude did**
+
+- **Pure logic (unit-tested):**
+  - `src/lib/audio/plan.ts`: a look-ahead cue planner. Every 200 ms it hands the audio clock the cues due in the next 1.5 s. Cues more than 300 ms late are skipped, never played late.
+  - `sounds.ts`: synthesized cues, so there are no audio files:
+    - short C6 pip for the 3-2-1;
+    - long G6 beep for go and each new interval;
+    - double E6 beep for warnings;
+    - a 1.8 s major-chord horn for the end.
+  - `src/lib/timer/session.ts`: the persisted run, validated with Zod and keyed by workout. It goes stale 30 min after the end.
+  - `tone.ts`: the meaning of each colour (yellow = prep, green = first second of work, red = last 3 s and the end, grey = paused).
+  - `format.ts`: the clock text. Bare seconds ("45") when they fit, because fewer characters mean bigger digits.
+  - `demos.ts`: Fran (For Time), Cindy (AMRAP), an alternating EMOM, and a 1-minute quick test.
+- **Browser adapters, in `src/browser/`** (exercised by e2e tests and real devices):
+  - `CuePlayer` (Web Audio):
+    - `audioSession.type = "playback"` on iOS, so beeps play in Silent mode;
+    - a compressor for loudness;
+    - output-latency compensation for Bluetooth;
+    - a near-inaudible 40 Hz keep-alive tone, against Chrome's 30 s silent-sink switch and sleeping Bluetooth speakers.
+  - `ScreenWakeLock`: re-acquired whenever the page becomes visible again.
+  - Fullscreen on Android and desktop, plus iOS and standalone detection.
+- **`useWorkoutRunner` hook:**
+  - a repaint loop that only re-renders when a visible value changes;
+  - the audio scheduler;
+  - recovery after interruptions ("tap to turn the sound back on" while the clock keeps running);
+  - pause, resume, restart and stop;
+  - resume after a reload.
+- **UI:**
+  - **ready screen:** workout summary, a big Start button, a device checklist, and iPhone install / wake-lock warnings;
+  - **running view:** sized with container query units, so it fills any phone in portrait or landscape;
+  - **hidden controls:** they auto-hide after 5 s, and stop or restart need a native `<dialog>` confirmation;
+  - **routes:** `/t/demo` and `/t/demo/[slug]`, in es / en / ca.
+- **E2E tests:** 7 scenarios on 5 profiles (desktop, iPhone 17 and Pixel 10 in portrait and landscape), with Playwright's fake clock. They check that nothing overflows the viewport.
+
+**What broke and what we changed**
+
+1. **WebKit never started the timer.** Playwright's WebKit on Windows has no Web Audio, so `new AudioContext()` threw inside the Start handler and the run never began. → **Real robustness fix:** every unlock step (audio, wake lock, fullscreen) is best-effort, and the clock starts first. Without audio the "turn the sound back on" prompt appears and the timer still runs.
+2. **The sound prompt covered the controls bar,** so a coach could not pause or stop while it was shown. → They are now stacked in one bottom container.
+3. **Flaky e2e timings.**
+   - `clock.install` lets real time flow too. → The clock is paused with `pauseAt` and advanced explicitly.
+   - With a paused clock the last animation frame lands a few ms short. → Each advance adds 50 ms.
+   - Running 10 minutes frame by frame timed out. → `fastForward` jumps instead.
+4. **Two more test mistakes by Claude:**
+   - the planner window end is exclusive, but the test expected a cue right on it;
+   - in `getTone`, the AMRAP "first second" check was computed wrongly (caught while writing it, then moved to a pure, tested function).
+5. **Typed messages rejected numbers in `{current}`.** → ICU `{current, number}` arguments.
+6. **Design adjustments after looking at the screenshots:**
+   - Geist Mono's slashed zero reads badly from a distance. → Geist with tabular digits; its digit width was measured at 0.636em to size the clock.
+   - The wake-lock warning hid the header. → It now hides itself after 8 s.
+   - The status line reserved empty space. → It only renders when there is a status to show.
+   - The ready screen overflowed in landscape. → A `short:` variant (max-height 32rem) compacts it.
+
+**Known limitations / to verify on real devices (Phase 3)**
+
+- **The beeps have only been checked in desktop Chrome.** Their audibility from a few metres, the iPhone Silent switch, Bluetooth and the keep-alive tone need real phones.
+- **In emulated WebKit the clock digits render in a thin weight,** apparently because variable font weights are missing on Playwright's Windows WebKit. Check on a real iPhone.
+- **Portrait is width-limited:** the digits are much bigger in landscape, which is the usual rig mount.
+- **Wake lock behaviour on battery saver** needs a 60-minute real test.
+
+**Checks:** `pnpm check` (112 unit tests; coverage 99% statements, 98% branches) and `pnpm test:e2e` (55/55) pass.
