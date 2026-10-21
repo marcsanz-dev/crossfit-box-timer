@@ -12,5 +12,47 @@
     "es": "Castellano",
     "en": "English",
     "ca": "Català"
+  },
+  "Demos": {
+    "title": "Entrenaments de prova",
+    "intro": "Prova el temporitzador en aquest mòbil sense necessitat d'un coach.",
+    "quick": "Prova ràpida: 3 intervals de 20 s per comprovar els xiulets."
+  },
+  "Mode": {
+    "forTime": "FOR TIME · CAP {cap}",
+    "amrap": "AMRAP {duration}",
+    "emom": "EMOM · {rounds, number} × {interval}"
+  },
+  "Timer": {
+    "start": "Començar",
+    "startHint": "Un sol toc: activa el so i manté la pantalla encesa.",
+    "exit": "Sortir",
+    "prepare": "Prepara't",
+    "round": "Ronda {current, number} / {total, number}",
+    "now": "Ara",
+    "next": "Després",
+    "capIn": "Cap en {time}",
+    "timeCap": "TIME CAP",
+    "finished": "FI",
+    "paused": "En pausa",
+    "showControls": "Mostrar controls",
+    "pause": "Pausar",
+    "resume": "Reprendre",
+    "restart": "Reiniciar",
+    "stop": "Aturar",
+    "cancel": "Continuar",
+    "confirmStopTitle": "Vols aturar l'entrenament?",
+    "confirmStopBody": "El temporitzador torna a la pantalla d'inici.",
+    "confirmRestartTitle": "Vols reiniciar l'entrenament?",
+    "confirmRestartBody": "Torna a començar amb el compte enrere de preparació.",
+    "tapForSound": "Toca aquí per reactivar el so",
+    "tapForSoundHint": "El navegador ha pausat l'àudio. El temps continua corrent.",
+    "checklistTitle": "Abans de començar",
+    "checkVolume": "Apuja el volum del mòbil (o de l'altaveu Bluetooth).",
+    "checkPower": "Millor endollat i sense mode d'estalvi de bateria.",
+    "checkControls": "Durant l'entrenament, toca la pantalla per veure els controls.",
+    "installIos": "A l'iPhone, per veure'l a pantalla completa: Compartir → Afegir a la pantalla d'inici, i obre'l des de la icona.",
+    "wakeLockUnsupported": "Aquest navegador no pot mantenir la pantalla encesa: desactiva el bloqueig automàtic als ajustos del mòbil.",
+    "wakeLockFailed": "No s'ha pogut mantenir la pantalla encesa. Desactiva l'estalvi de bateria o el bloqueig automàtic."
   }
 }

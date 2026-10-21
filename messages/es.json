@@ -12,5 +12,47 @@
     "es": "Castellano",
     "en": "English",
     "ca": "Català"
+  },
+  "Demos": {
+    "title": "Entrenos de prueba",
+    "intro": "Prueba el temporizador en este móvil sin necesidad de un coach.",
+    "quick": "Prueba rápida: 3 intervalos de 20 s para comprobar los pitidos."
+  },
+  "Mode": {
+    "forTime": "FOR TIME · CAP {cap}",
+    "amrap": "AMRAP {duration}",
+    "emom": "EMOM · {rounds, number} × {interval}"
+  },
+  "Timer": {
+    "start": "Empezar",
+    "startHint": "Un solo toque: activa el sonido y mantiene la pantalla encendida.",
+    "exit": "Salir",
+    "prepare": "Prepárate",
+    "round": "Ronda {current, number} / {total, number}",
+    "now": "Ahora",
+    "next": "Luego",
+    "capIn": "Cap en {time}",
+    "timeCap": "TIME CAP",
+    "finished": "FIN",
+    "paused": "En pausa",
+    "showControls": "Mostrar controles",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "restart": "Reiniciar",
+    "stop": "Parar",
+    "cancel": "Seguir",
+    "confirmStopTitle": "¿Parar el entreno?",
+    "confirmStopBody": "El temporizador vuelve a la pantalla de inicio.",
+    "confirmRestartTitle": "¿Reiniciar el entreno?",
+    "confirmRestartBody": "Empieza de nuevo con la cuenta atrás de preparación.",
+    "tapForSound": "Toca aquí para reactivar el sonido",
+    "tapForSoundHint": "El navegador ha pausado el audio. El tiempo sigue corriendo.",
+    "checklistTitle": "Antes de empezar",
+    "checkVolume": "Sube el volumen del móvil (o del altavoz Bluetooth).",
+    "checkPower": "Mejor enchufado y sin modo de ahorro de batería.",
+    "checkControls": "Durante el entreno, toca la pantalla para ver los controles.",
+    "installIos": "En iPhone, para verlo a pantalla completa: Compartir → Añadir a pantalla de inicio, y ábrelo desde el icono.",
+    "wakeLockUnsupported": "Este navegador no puede mantener la pantalla encendida: desactiva el bloqueo automático en los ajustes del móvil.",
+    "wakeLockFailed": "No se ha podido mantener la pantalla encendida. Desactiva el ahorro de batería o el bloqueo automático."
   }
 }

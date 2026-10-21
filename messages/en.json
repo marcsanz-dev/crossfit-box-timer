@@ -12,5 +12,47 @@
     "es": "Castellano",
     "en": "English",
     "ca": "Català"
+  },
+  "Demos": {
+    "title": "Demo workouts",
+    "intro": "Try the timer on this phone without a coach account.",
+    "quick": "Quick test: 3 intervals of 20 s to check the beeps."
+  },
+  "Mode": {
+    "forTime": "FOR TIME · CAP {cap}",
+    "amrap": "AMRAP {duration}",
+    "emom": "EMOM · {rounds, number} × {interval}"
+  },
+  "Timer": {
+    "start": "Start",
+    "startHint": "One tap: turns on sound and keeps the screen awake.",
+    "exit": "Exit",
+    "prepare": "Get ready",
+    "round": "Round {current, number} / {total, number}",
+    "now": "Now",
+    "next": "Next",
+    "capIn": "Cap in {time}",
+    "timeCap": "TIME CAP",
+    "finished": "DONE",
+    "paused": "Paused",
+    "showControls": "Show controls",
+    "pause": "Pause",
+    "resume": "Resume",
+    "restart": "Restart",
+    "stop": "Stop",
+    "cancel": "Keep going",
+    "confirmStopTitle": "Stop the workout?",
+    "confirmStopBody": "The timer goes back to the start screen.",
+    "confirmRestartTitle": "Restart the workout?",
+    "confirmRestartBody": "It starts again with the prep countdown.",
+    "tapForSound": "Tap here to turn the sound back on",
+    "tapForSoundHint": "The browser paused the audio. The clock keeps running.",
+    "checklistTitle": "Before you start",
+    "checkVolume": "Turn up the phone volume (or the Bluetooth speaker).",
+    "checkPower": "Ideally plugged in, with battery saver off.",
+    "checkControls": "During the workout, tap the screen to show the controls.",
+    "installIos": "On iPhone, for full screen: Share → Add to Home Screen, then open it from the icon.",
+    "wakeLockUnsupported": "This browser can't keep the screen on: turn off auto-lock in the phone settings.",
+    "wakeLockFailed": "Couldn't keep the screen on. Turn off battery saver or auto-lock."
   }
 }

@@ -1,9 +1,24 @@
 @import "tailwindcss";
 
+/* Short viewports: phones in landscape. */
+@custom-variant short (@media (max-height: 32rem));
+
 /* Placeholder tokens; the "CrossFit Box" visual identity is defined in Phase 5. */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+/* Phone timer: pure black and high-contrast colours, readable from several metres away. */
+@theme {
+  --color-phone-bg: #000000;
+  --color-phone-fg: #ffffff;
+  --color-phone-dim: #a3a3a3;
+  --color-phone-surface: #1c1c1e;
+  --color-phone-line: #3a3a3c;
+  --color-phone-prep: #ffd60a;
+  --color-phone-go: #32d74b;
+  --color-phone-alert: #ff453a;
 }
 
 @theme inline {
