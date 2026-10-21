@@ -8,12 +8,12 @@ export default defineConfig({
   test: {
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     environment: "node",
-    // Phase 0 has no tests yet; the timer engine tests arrive in Phase 1.
-    passWithNoTests: true,
     coverage: {
       provider: "v8",
       include: ["src/lib/**"],
-      exclude: ["**/*.test.*"],
+      exclude: ["**/*.test.*", "**/index.ts"],
+      // Framework-free logic is the core of the app: keep it fully tested.
+      thresholds: { lines: 95, functions: 95, branches: 95, statements: 95 },
     },
   },
 });
