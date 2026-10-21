@@ -1,3 +1,7 @@
+# Dependency install scripts are opt-in (pnpm default). None of these are needed:
+# prebuilt binaries ship as optional dependencies.
 allowBuilds:
+  "@parcel/watcher": false
+  "@swc/core": false
   sharp: false
   unrs-resolver: false

@@ -1,0 +1,16 @@
+{
+  "Metadata": {
+    "title": "CrossFit Box · Temporitzador",
+    "description": "Configura l'entrenament a l'ordinador i porta'l al mòbil del rig."
+  },
+  "Home": {
+    "title": "Temporitzador de CrossFit Box",
+    "tagline": "Configura l'entrenament a l'ordinador. El mòbil del rig fa la resta."
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "es": "Castellano",
+    "en": "English",
+    "ca": "Català"
+  }
+}

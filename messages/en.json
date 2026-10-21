@@ -1,0 +1,16 @@
+{
+  "Metadata": {
+    "title": "CrossFit Box · Timer",
+    "description": "Set up the workout on the computer and send it to the phone on the rig."
+  },
+  "Home": {
+    "title": "CrossFit Box Timer",
+    "tagline": "Set up the workout on the computer. The phone on the rig does the rest."
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "es": "Castellano",
+    "en": "English",
+    "ca": "Català"
+  }
+}
