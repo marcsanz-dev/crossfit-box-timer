@@ -11,19 +11,19 @@ A web app for the box **"CrossFit Box"** (client: Yaqbot, take-home task):
 - The workout reaches a **phone** mounted near the rig.
 - The phone runs a **full-screen timer** that can be read from several metres away. It plays **beeps** and keeps running for a **whole class untouched**.
 
-Guiding principle from the client: *"We'd rather see something smaller that works on a real phone than something bigger that doesn't."* The five minimum requirements come first. Extras come only after those are solid on real devices.
+Guiding principle from the client: _"We'd rather see something smaller that works on a real phone than something bigger that doesn't."_ The five minimum requirements come first. Extras come only after those are solid on real devices.
 
 Deadline: **Monday 2026-10-26, 23:59 (Europe/Madrid)**. Suggested effort is 3–4 h. We report the real time spent honestly in the notes.
 
 ## 2. Minimum requirements (must)
 
-| # | Requirement | How we meet it |
-|---|---|---|
-| R1 | Desktop setup: For Time (with cap), AMRAP, EMOM; each configurable | Coach panel with one form per mode, validated on client and server |
-| R2 | Desktop → phone | The coach clicks "Send to phone" and gets a **short code + QR**. The phone opens `/t/<code>` (no login), downloads the workout once and then runs offline |
-| R3 | Full-screen, readable, sound cues, a full session untouched | Huge tabular digits, dark high-contrast UI, Web Audio beeps scheduled on the audio clock, Screen Wake Lock, wall-clock timing, self-recovery |
-| R4 | Google sign-in, any `@yaqbot.com` account (tested with `hola@yaqbot.com`) | Better Auth + Google provider. The rule is enforced **server-side**: a verified email plus the ID-token claim `hd === "yaqbot.com"`. The OAuth app is **In production** |
-| R5 | Online at a URL | Vercel (Hobby, free), with Neon Postgres (free) |
+| #   | Requirement                                                               | How we meet it                                                                                                                                                          |
+| --- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| R1  | Desktop setup: For Time (with cap), AMRAP, EMOM; each configurable        | Coach panel with one form per mode, validated on client and server                                                                                                      |
+| R2  | Desktop → phone                                                           | The coach clicks "Send to phone" and gets a **short code + QR**. The phone opens `/t/<code>` (no login), downloads the workout once and then runs offline               |
+| R3  | Full-screen, readable, sound cues, a full session untouched               | Huge tabular digits, dark high-contrast UI, Web Audio beeps scheduled on the audio clock, Screen Wake Lock, wall-clock timing, self-recovery                            |
+| R4  | Google sign-in, any `@yaqbot.com` account (tested with `hola@yaqbot.com`) | Better Auth + Google provider. The rule is enforced **server-side**: a verified email plus the ID-token claim `hd === "yaqbot.com"`. The OAuth app is **In production** |
+| R5  | Online at a URL                                                           | Vercel (Hobby, free), with Neon Postgres (free)                                                                                                                         |
 
 ## 3. Workout modes (domain spec)
 
@@ -32,18 +32,21 @@ Every mode starts with a **prep countdown**, 10 s by default and configurable to
 All modes also have an optional **name** and **exercises text**. They appear small on the phone and never compete with the clock.
 
 ### For Time (with time cap)
+
 - **Clock:** counts **up** from 00:00 and stops at the cap. It keeps running when athletes finish, because each athlete reads their own time.
 - **Config:** time cap (required, 1–60 min).
 - **Screen:** elapsed time (huge), `FOR TIME · CAP 10:00`, the exercises, and the time left to the cap (small). At the cap the screen shows **"TIME CAP"**.
 - **Cues:** a warning at 1:00 left, short beeps at 3-2-1 before the cap, and the final horn at the cap.
 
 ### AMRAP
+
 - **Clock:** counts **down** from the duration to 00:00. Rounds are not counted.
 - **Config:** duration (1–60 min).
 - **Screen:** time remaining (huge), `AMRAP 12`, the exercises.
 - **Cues:** a warning at half time, a warning at 1:00 left, short beeps at 3-2-1, and the final horn.
 
 ### EMOM (and E*n*MOM)
+
 - **Clock:** the timer marks only the **start of each interval**. Athletes split work and rest themselves.
 - **Config:**
   - interval length: 10 s – 10 min in 5 s steps, default 1:00;
@@ -53,6 +56,7 @@ All modes also have an optional **name** and **exercises text**. They appear sma
 - **Cues:** short beeps at 3-2-1 before each new interval and a long beep when each interval starts. After the last round, the final horn replaces the long beep.
 
 **Cue sounds** (synthesized, no audio files):
+
 - short beep: 3-2-1 countdowns;
 - long beep: go / new interval;
 - double beep: warnings;
@@ -82,43 +86,43 @@ They are tuned in the 1–3 kHz range to cut through gym noise, and we adjust th
 
 ### Stack (versions verified 2026-10-21; see §11)
 
-| Piece | Choice | Why |
-|---|---|---|
-| Framework | **Next.js 16.4** (App Router, Turbopack, Cache Components), **React 19.3** | The client's stack. One codebase covers the coach panel, server logic and the public phone page. Turbopack and Cache Components are the current defaults |
-| Language | **TypeScript 6.0** (strict) | TS 7.0 (Go port) is stable but has no programmatic API until 7.1, which typescript-eslint and the Next.js tooling still need. Microsoft keeps 6.x for exactly this case |
-| Runtime | **Node.js 24.x** LTS | Vercel's default. Node 26 only becomes Active LTS on 2026-10-28 |
-| Package manager | **pnpm 12** | Latest stable, pinned through `packageManager` |
-| Styling | **Tailwind CSS 4.3** + **shadcn/ui** (coach panel only) | Tailwind needs no config. shadcn gives accessible form, dialog and tab primitives we own as code |
-| i18n | **next-intl 4.14**: `es` default without prefix, `/en`, `/ca` | The de-facto App Router i18n library, integrated with `proxy.ts` |
-| Auth | **Better Auth 1.7** (≥1.7.12) + Google provider | Auth.js is now maintained by the Better Auth team, which recommends Better Auth for new projects. It has a documented hook (`validateUserInfo`) to reject users on every sign-in |
-| Database | **Neon Postgres** (Free plan, own Neon account) | The client uses Postgres. Neon is free without a card, scales to zero without pausing the project (Supabase pauses after 7 days), and has branches for dev and prod |
-| ORM | **Drizzle ORM 0.45** + drizzle-kit 0.31 | Thin, SQL-first, no codegen, supported by the Better Auth adapter. We avoid the Drizzle 1.0 RC and the Prisma 8 RC |
-| Validation | **Zod 4.6** | One schema per mode, shared by the form, server actions and the phone page |
-| Hosting | **Vercel Hobby** | First-class Next.js support. Env vars can be scoped to Development, Preview and Production. Free |
-| Tests | **Vitest 5** (unit), **Playwright 1.64** (e2e with WebKit "iPhone 17" and Chromium "Pixel 10", portrait and landscape) | The timer engine is pure TS and fully unit-tested. Device emulation covers layouts. Real devices cover audio, wake lock and the 60-minute runs |
-| Quality | ESLint 10 (flat config, `eslint-config-next`), Prettier 3.9 | `next lint` was removed in Next 16, so this is the officially documented path |
-| Small libs | `qrcode` (server-side SVG), `nanoid` `customAlphabet` | Dependency-light |
+| Piece           | Choice                                                                                                                 | Why                                                                                                                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework       | **Next.js 16.4** (App Router, Turbopack, Cache Components), **React 19.3**                                             | The client's stack. One codebase covers the coach panel, server logic and the public phone page. Turbopack and Cache Components are the current defaults                         |
+| Language        | **TypeScript 6.0** (strict)                                                                                            | TS 7.0 (Go port) is stable but has no programmatic API until 7.1, which typescript-eslint and the Next.js tooling still need. Microsoft keeps 6.x for exactly this case          |
+| Runtime         | **Node.js 24.x** LTS                                                                                                   | Vercel's default. Node 26 only becomes Active LTS on 2026-10-28                                                                                                                  |
+| Package manager | **pnpm 12**                                                                                                            | Latest stable, pinned through `packageManager`                                                                                                                                   |
+| Styling         | **Tailwind CSS 4.3** + **shadcn/ui** (coach panel only)                                                                | Tailwind needs no config. shadcn gives accessible form, dialog and tab primitives we own as code                                                                                 |
+| i18n            | **next-intl 4.14**: `es` default without prefix, `/en`, `/ca`                                                          | The de-facto App Router i18n library, integrated with `proxy.ts`                                                                                                                 |
+| Auth            | **Better Auth 1.7** (≥1.7.12) + Google provider                                                                        | Auth.js is now maintained by the Better Auth team, which recommends Better Auth for new projects. It has a documented hook (`validateUserInfo`) to reject users on every sign-in |
+| Database        | **Neon Postgres** (Free plan, own Neon account)                                                                        | The client uses Postgres. Neon is free without a card, scales to zero without pausing the project (Supabase pauses after 7 days), and has branches for dev and prod              |
+| ORM             | **Drizzle ORM 0.45** + drizzle-kit 0.31                                                                                | Thin, SQL-first, no codegen, supported by the Better Auth adapter. We avoid the Drizzle 1.0 RC and the Prisma 8 RC                                                               |
+| Validation      | **Zod 4.6**                                                                                                            | One schema per mode, shared by the form, server actions and the phone page                                                                                                       |
+| Hosting         | **Vercel Hobby**                                                                                                       | First-class Next.js support. Env vars can be scoped to Development, Preview and Production. Free                                                                                 |
+| Tests           | **Vitest 5** (unit), **Playwright 1.64** (e2e with WebKit "iPhone 17" and Chromium "Pixel 10", portrait and landscape) | The timer engine is pure TS and fully unit-tested. Device emulation covers layouts. Real devices cover audio, wake lock and the 60-minute runs                                   |
+| Quality         | ESLint 10 (flat config, `eslint-config-next`), Prettier 3.9                                                            | `next lint` was removed in Next 16, so this is the officially documented path                                                                                                    |
+| Small libs      | `qrcode` (server-side SVG), `nanoid` `customAlphabet`                                                                  | Dependency-light                                                                                                                                                                 |
 
 ### Routes
 
-| Route | Who | What |
-|---|---|---|
-| `/` | public | Landing with "Coach sign-in" and "Open timer (enter code)" |
-| `/coach` | coaches | Workout builder (mode tabs, live preview of the phone screen), "Send to phone", my presets, Box library |
-| `/coach/share/[code]` | coaches | Big QR and short code to show on the desktop |
-| `/t` | public | **Phone home**: enter a 6-character code and reopen the last workout. This is the installed web app's start URL |
-| `/t/[code]` | public | Loads the workout snapshot, stores it locally, shows "Ready" with a big **Start** button, then the timer |
-| `/api/auth/[...all]` | — | Better Auth handler |
+| Route                 | Who     | What                                                                                                            |
+| --------------------- | ------- | --------------------------------------------------------------------------------------------------------------- |
+| `/`                   | public  | Landing with "Coach sign-in" and "Open timer (enter code)"                                                      |
+| `/coach`              | coaches | Workout builder (mode tabs, live preview of the phone screen), "Send to phone", my presets, Box library         |
+| `/coach/share/[code]` | coaches | Big QR and short code to show on the desktop                                                                    |
+| `/t`                  | public  | **Phone home**: enter a 6-character code and reopen the last workout. This is the installed web app's start URL |
+| `/t/[code]`           | public  | Loads the workout snapshot, stores it locally, shows "Ready" with a big **Start** button, then the timer        |
+| `/api/auth/[...all]`  | —       | Better Auth handler                                                                                             |
 
 **Why both QR and code:** on iPhone, scanning a QR opens Safari, not the installed Home Screen app. So in the installed app the coach **types the code**. The QR is the fast path in the normal browser.
 
 **Recommended method per phone.** The share page on the desktop shows both, with this guidance:
 
-| Phone | Recommended | Why |
-|---|---|---|
-| **iPhone** | Install once ("Add to Home Screen"), then open the app and **type the code** | Only the Home Screen app is truly full screen on iPhone, and a scanned QR opens in Safari instead |
-| **Android** | **Scan the QR** with the camera; it opens in Chrome | Chrome on Android supports real full screen from the browser, so no install is needed |
-| Any phone, quick test | Scan the QR | Fastest, at the cost of browser bars on iPhone |
+| Phone                 | Recommended                                                                  | Why                                                                                               |
+| --------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **iPhone**            | Install once ("Add to Home Screen"), then open the app and **type the code** | Only the Home Screen app is truly full screen on iPhone, and a scanned QR opens in Safari instead |
+| **Android**           | **Scan the QR** with the camera; it opens in Chrome                          | Chrome on Android supports real full screen from the browser, so no install is needed             |
+| Any phone, quick test | Scan the QR                                                                  | Fastest, at the cost of browser bars on iPhone                                                    |
 
 The phone page also detects iPhone Safari outside the Home Screen app and suggests installing it, without blocking the timer.
 
@@ -144,18 +148,21 @@ The phone page also detects iPhone Safari outside the Home Screen app and sugges
 ### Phone robustness ("untouched for a whole class")
 
 **On the Start tap**, all of this happens inside one user gesture:
+
 1. `navigator.audioSession.type = "playback"` (iOS 17+), so beeps play even in Silent mode.
 2. Create or resume the `AudioContext`.
 3. Request the Screen Wake Lock.
 4. On Android, call `requestFullscreen()`.
 
 **Keep-alive while the timer runs:**
+
 - Re-acquire the wake lock on `visibilitychange`.
 - Watch the `AudioContext` state and resume it after an interruption.
 - If an action really needs a tap, for example after a phone call, show a clear "Tap to resume sound" overlay **while the clock keeps running**.
 - Play a near-inaudible keep-alive tone, so Bluetooth speakers don't fall asleep and Chrome doesn't switch to its "silent sink" after 30 s.
 
 **Fallbacks and controls:**
+
 - If the wake lock is not supported or is denied, show a visible warning with instructions. We don't add a NoSleep.js-style hack: it is unmaintained since 2020 and unverified on iOS 26/27.
 - **Hidden controls**: one tap reveals pause/stop/restart. Stop and restart require a confirmation. The controls auto-hide after a few seconds.
 - **Layout**: fluid typography (`clamp`/container units), tested in portrait and landscape, with safe-area insets for notches.
@@ -180,11 +187,11 @@ AND (
 
 ### Environments
 
-| Env | URL | DB | Extra emails |
-|---|---|---|---|
-| Development | `http://localhost:3000` | Neon branch `dev` | yes |
-| Preview | stable branch URL `…-git-<branch>-….vercel.app` | Neon branch `dev` | yes |
-| Production | `<project>.vercel.app` | Neon branch `main` | **no** |
+| Env         | URL                                             | DB                 | Extra emails |
+| ----------- | ----------------------------------------------- | ------------------ | ------------ |
+| Development | `http://localhost:3000`                         | Neon branch `dev`  | yes          |
+| Preview     | stable branch URL `…-git-<branch>-….vercel.app` | Neon branch `dev`  | yes          |
+| Production  | `<project>.vercel.app`                          | Neon branch `main` | **no**       |
 
 **Google OAuth on Preview:** Google forbids wildcard redirect URIs, and each preview deployment has a different URL. We register the **stable branch URL** of one preview branch as an extra redirect URI and scope `BETTER_AUTH_URL` to that branch in Vercel.
 
@@ -192,33 +199,36 @@ The alternative is Better Auth's `oAuthProxy` plugin. It works on any preview UR
 
 ## 7. Risks and mitigations
 
-| Risk | Impact | Mitigation |
-|---|---|---|
-| **No element fullscreen on iPhone**, still the case in iOS 27 | Browser bars are visible in Safari | Installable web app: since iOS 26, Add to Home Screen opens as a web app by default. Use `black-translucent` status bar plus safe areas, and show in-app install instructions. Landscape in Safari still works acceptably |
-| iOS Silent switch mutes Web Audio | No beeps | `audioSession.type = "playback"` (iOS 17+). Trade-off: it pauses other audio on the same phone, such as music. Documented: play music from another device |
-| Wake lock released or denied (Low Power Mode, Battery Saver) | Screen turns off | Re-acquire on visibility change, show a visible warning, tell the coach to disable power saving. **Test on battery on real devices** |
-| AudioContext interrupted (call, other app) | Silent timer | State watcher, resume, and a "tap to resume sound" overlay. The clock never stops |
-| Bluetooth speaker sleeps or has latency | First beep clipped, or beeps late | Keep-alive tone and `outputLatency` compensation |
-| Wake Lock and installability need **HTTPS** | Can't test on a real phone via LAN IP | **Deploy early** (Phase 3) and test on real phones from Preview |
-| Vercel Hobby is "non-commercial use only" | Terms | This is an unpaid take-home exercise. Documented: a real deployment for the box would move to Vercel Pro or Yaqbot's own infrastructure |
-| `hola@yaqbot.com` might not be a real Workspace user (alias or group) | Client can't sign in | Evidence says Workspace. If in doubt, this is the one question worth emailing to the client |
-| Neon cold start after 5 min idle | ~0.5 s slower first request | Acceptable. The phone needs the network only once |
-| Time budget (3–4 h suggested) | Over-engineering | Strict phase order. Extras only after R1–R5 pass on real phones |
+| Risk                                                                  | Impact                                | Mitigation                                                                                                                                                                                                                |
+| --------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **No element fullscreen on iPhone**, still the case in iOS 27         | Browser bars are visible in Safari    | Installable web app: since iOS 26, Add to Home Screen opens as a web app by default. Use `black-translucent` status bar plus safe areas, and show in-app install instructions. Landscape in Safari still works acceptably |
+| iOS Silent switch mutes Web Audio                                     | No beeps                              | `audioSession.type = "playback"` (iOS 17+). Trade-off: it pauses other audio on the same phone, such as music. Documented: play music from another device                                                                 |
+| Wake lock released or denied (Low Power Mode, Battery Saver)          | Screen turns off                      | Re-acquire on visibility change, show a visible warning, tell the coach to disable power saving. **Test on battery on real devices**                                                                                      |
+| AudioContext interrupted (call, other app)                            | Silent timer                          | State watcher, resume, and a "tap to resume sound" overlay. The clock never stops                                                                                                                                         |
+| Bluetooth speaker sleeps or has latency                               | First beep clipped, or beeps late     | Keep-alive tone and `outputLatency` compensation                                                                                                                                                                          |
+| Wake Lock and installability need **HTTPS**                           | Can't test on a real phone via LAN IP | **Deploy early** (Phase 3) and test on real phones from Preview                                                                                                                                                           |
+| Vercel Hobby is "non-commercial use only"                             | Terms                                 | This is an unpaid take-home exercise. Documented: a real deployment for the box would move to Vercel Pro or Yaqbot's own infrastructure                                                                                   |
+| `hola@yaqbot.com` might not be a real Workspace user (alias or group) | Client can't sign in                  | Evidence says Workspace. If in doubt, this is the one question worth emailing to the client                                                                                                                               |
+| Neon cold start after 5 min idle                                      | ~0.5 s slower first request           | Acceptable. The phone needs the network only once                                                                                                                                                                         |
+| Time budget (3–4 h suggested)                                         | Over-engineering                      | Strict phase order. Extras only after R1–R5 pass on real phones                                                                                                                                                           |
 
 ## 8. Phases and acceptance criteria
 
 Each phase ends with: tests green, a DEVLOG entry, a plain-language explanation to the developer, small Conventional Commits, and approval before the next phase.
 
 **Phase 0 — Foundations** (docs + scaffold)
+
 - `git init`; `CLAUDE.md`, `docs/PLAN.md` (agreed), `docs/DEVLOG.md`, `README.md` skeleton.
 - `create-next-app` (Next 16.4, TS, Tailwind, ESLint, App Router), Prettier, Vitest, Playwright, next-intl wired with `es` / `en` / `ca` from day one.
 - ✅ Done when `pnpm dev`, `pnpm lint`, `pnpm typecheck`, `pnpm test` and `pnpm build` all pass on an empty app, and `/`, `/en` and `/ca` render.
 
 **Phase 1 — Timer engine** (pure TS, no UI)
+
 - Zod schemas for the three modes; `buildTimeline`; `getDisplayState`; cue lists.
 - ✅ Done when unit tests cover every mode at its boundaries: prep, first second, cue instants, the EMOM interval change, cap/end, and reload at an arbitrary instant. Coverage of the engine is ≥ 95%.
 
 **Phase 2 — Phone timer** (local demo workout, no backend)
+
 - `/t/demo`: Ready screen, Start, prep, timer, finished screen; audio scheduler and beeps; wake lock; Android fullscreen; hidden controls with confirmation; localStorage resume; responsive portrait and landscape.
 - ✅ Done when:
   - Playwright screenshots on the iPhone 17 / Pixel 10 profiles in both orientations show no overflow;
@@ -226,10 +236,12 @@ Each phase ends with: tests green, a DEVLOG entry, a plain-language explanation 
   - a reload mid-workout resumes at the correct time.
 
 **Phase 3 — First deploy + real-phone test** (needs the developer to create the GitHub repo and the Vercel project)
+
 - Deploy to Vercel. Run a **60-minute test on the developer's Android phone on battery**, and a quick iPhone test by a friend: Safari plus Home Screen app, Silent mode on.
 - ✅ Done when the screen never turns off and every beep is heard on both phones, and issues are logged in DEVLOG.
 
 **Phase 4 — Auth + DB** (needs the developer to create the Neon and Google Cloud accounts)
+
 - Neon `main` and `dev` branches; Drizzle schema and migrations; Better Auth with Google; `isAllowedCoach` plus unit tests; protected `/coach`; Google OAuth app **In production**.
 - ✅ Done when:
   - the developer's Gmail can sign in on dev and Preview but is **rejected on Production**;
@@ -237,17 +249,21 @@ Each phase ends with: tests green, a DEVLOG entry, a plain-language explanation 
   - the rule has unit tests for: hd match, hd missing, wrong domain, unverified email, and extra email in prod vs preview.
 
 **Phase 5 — Coach panel + desktop → phone** (closes R1 and R2)
+
 - Mode forms with validation and a live preview; "Send to phone" creates a `share` snapshot; QR and code page; `/t` code entry; `/t/[code]` loads the workout, then runs offline.
 - ✅ Done when a coach builds each of the three modes on desktop, the phone opens it via QR **and** via code, and the timer runs with Wi-Fi turned off after loading.
 
 **Phase 6 — Extras**: presets, Box library (duplicate), installable web app (manifest, icons, install guide), offline reload (service worker).
+
 - ✅ Done when presets CRUD and duplicate work, the Home Screen app opens `/t` full screen on iPhone and Android, and a reload works offline.
 
 **Phase 7 — Polish + verification**
+
 - Translations completed (es / en / ca); accessibility pass on the coach panel (keyboard, labels, contrast AA, Lighthouse); visual polish; full real-device test pass.
 - ✅ Done when Lighthouse scores Accessibility ≥ 95 and Performance ≥ 90 on the phone page, and every mode has been tested on Android and iPhone.
 
 **Phase 8 — Delivery**
+
 - Final README (usage, local setup, Assumptions & decisions, How I built this with Claude Code); half-page notes from DEVLOG; production URL checked with an `@yaqbot.com` rule review; conversation log exported.
 
 ## 9. Assumptions (to be copied to README "Assumptions & decisions")
@@ -265,7 +281,7 @@ Each phase ends with: tests green, a DEVLOG entry, a plain-language explanation 
 
 ## 10. Open questions for the client
 
-None sent for now (one set allowed, to sebastian@yaqbot.com). Candidate if needed: *Is hola@yaqbot.com a regular Google Workspace user (not an alias or group)?*
+None sent for now (one set allowed, to sebastian@yaqbot.com). Candidate if needed: _Is hola@yaqbot.com a regular Google Workspace user (not an alias or group)?_
 
 ## 11. Sources (checked 2026-10-21)
 
