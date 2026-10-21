@@ -73,3 +73,42 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 6. **The e2e tests found that `/` redirected to `/en`.** next-intl detects the browser language, and Playwright's browsers are in English. → Set `localeDetection: false`, because the agreed behaviour is "Spanish by default, other languages on demand".
 
 **Checks:** `pnpm lint`, `typecheck`, `format:check`, `test` (no unit tests yet), `build`, and `test:e2e` (20/20) all pass.
+
+---
+
+## Phase 1 — Timer engine — 2026-10-21
+
+**What I asked**
+
+- Build the timer logic as pure TypeScript, with no UI, and test it thoroughly.
+
+**What Claude did**
+
+- **`src/lib/timer/schema.ts`.** Zod 4.6 schemas for the three modes, with shared limits:
+  - prep: 0/5/10/15/20 s, default 10;
+  - work: 1–60 min;
+  - EMOM interval: 10 s – 10 min in 5 s steps; 1–60 rounds;
+  - up to 12 EMOM stations that cycle.
+- **`timeline.ts`.** Expands a workout into **segments** (prep plus work blocks, one per EMOM interval) and **cues** at absolute milliseconds from the Start tap.
+  - Cue types: `countdown` (3-2-1), `start` (long beep), `warning` (double beep) and `finish` (horn).
+  - Warnings are kept strictly inside the work part and away from the final 3-2-1, and duplicates are merged. Example: in a 2-minute AMRAP, half time and "1 minute left" are the same instant.
+- **`display.ts`.** `getDisplayState(timeline, elapsedMs)` returns everything the phone shows.
+  - The big number: For Time counts up; AMRAP counts down; in EMOM it's the interval countdown.
+  - Also: round, current and next station, time to the cap, progress.
+  - Countdowns round **up**, so "3" appears exactly when the first beep sounds and "1" stays until the end.
+- **`clock.ts`.** A persisted run state (start timestamp plus pause bookkeeping).
+  - Elapsed time is always `now − start − paused`, never counted tick by tick.
+  - A reload or a killed tab resumes at the right second.
+- **`format.ts`.** `m:ss` / `mm:ss` formatting, with stable width.
+- **74 unit tests.** Coverage: 100% lines and functions, 99% statements, 96% branches. Vitest now fails below 95%.
+
+**What broke and what we changed**
+
+1. **One test failed because Claude computed the expected value wrong, not because of an engine bug.** At 265 s into an EMOM there are 10 s of prep and 255 s of work, which is 15 s into round 5. So 45 s are left, not 5. → Fixed the expectation and wrote the arithmetic in a comment.
+2. **Branch coverage came out at 94.6%, below the threshold.**
+   - One uncovered branch guarded "work length 0", which the schema makes impossible. → Removed it, with a comment.
+   - Two defensive branches remain, for impossible states. Branch coverage is now 96.3%.
+3. **Plan change: the EMOM total length is capped at 60 minutes,** like the other modes. Otherwise 60 rounds × 10 min would allow a 10-hour EMOM.
+4. **Enabled `noUncheckedIndexedAccess`** in `tsconfig.json`, so array lookups are typed as possibly `undefined`.
+
+**Checks:** `pnpm check` and `pnpm test:coverage` pass.

@@ -73,14 +73,14 @@ src/
   app/[locale]/            # all routes live under the locale segment
   components/              # React components (kebab-case files)
   i18n/                    # next-intl routing, navigation, request config
-  lib/                     # framework-free logic (timer engine, rules), unit-tested
+  lib/                     # framework-free logic, unit-tested (≥95% coverage enforced)
+    timer/                 # schema (Zod) → timeline (segments + cues) → display state; run clock; format
   proxy.ts                 # next-intl locale middleware
   global.ts                # next-intl type augmentation
 ```
 
 Planned (see PLAN.md §6):
 
-- `src/lib/timer/`: pure timer engine;
 - `src/lib/audio/`: Web Audio scheduler;
 - `src/lib/auth/`: Better Auth and the `isAllowedCoach` rule;
 - `src/db/`: Drizzle schema;
@@ -88,7 +88,7 @@ Planned (see PLAN.md §6):
 
 ## Conventions
 
-- **TypeScript strict.** No `any`. Validate external data (forms, DB jsonb, localStorage, URL) with Zod.
+- **TypeScript strict** with `noUncheckedIndexedAccess`. No `any`. Validate external data (forms, DB jsonb, localStorage, URL) with Zod.
 - **Server Components by default.** Add `"use client"` only where interactivity or browser APIs need it.
 - **Keep logic out of components.** The timer engine, cue scheduling and the access rule are pure functions in `src/lib`, with unit tests next to them (`*.test.ts`).
 - **Time is derived from timestamps** (`now − startedAt`), never from counting ticks.

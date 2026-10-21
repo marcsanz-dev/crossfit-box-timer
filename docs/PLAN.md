@@ -50,7 +50,7 @@ All modes also have an optional **name** and **exercises text**. They appear sma
 - **Clock:** the timer marks only the **start of each interval**. Athletes split work and rest themselves.
 - **Config:**
   - interval length: 10 s – 10 min in 5 s steps, default 1:00;
-  - number of rounds: 1–60. The total is shown as `rounds × interval`;
+  - number of rounds: 1–60. The total is shown as `rounds × interval` and is capped at 60 minutes, like the other modes;
   - optional exercise list that cycles (A, B, C, A, B, C…). It covers odd/even alternation (2 items) and stations (N items).
 - **Screen:** seconds left in the current interval (huge), `Round 3 / 10` (large), `EMOM · 10 × 1:00`, and `Now: 12 KB swings` / `Next: …`.
 - **Cues:** short beeps at 3-2-1 before each new interval and a long beep when each interval starts. After the last round, the final horn replaces the long beep.
