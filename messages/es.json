@@ -16,7 +16,8 @@
   "Demos": {
     "title": "Entrenos de prueba",
     "intro": "Prueba el temporizador en este móvil sin necesidad de un coach.",
-    "quick": "Prueba rápida: 3 intervalos de 20 s para comprobar los pitidos."
+    "quick": "Prueba rápida: 3 intervalos de 20 s para comprobar los pitidos.",
+    "fullHour": "Prueba de resistencia: 60 minutos sin tocar el móvil, con pitidos cada minuto."
   },
   "Mode": {
     "forTime": "FOR TIME · CAP {cap}",

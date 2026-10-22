@@ -16,7 +16,8 @@
   "Demos": {
     "title": "Entrenaments de prova",
     "intro": "Prova el temporitzador en aquest mòbil sense necessitat d'un coach.",
-    "quick": "Prova ràpida: 3 intervals de 20 s per comprovar els xiulets."
+    "quick": "Prova ràpida: 3 intervals de 20 s per comprovar els xiulets.",
+    "fullHour": "Prova de resistència: 60 minuts sense tocar el mòbil, amb xiulets cada minut."
   },
   "Mode": {
     "forTime": "FOR TIME · CAP {cap}",

@@ -38,6 +38,9 @@ function DemoLink({ slug }: { slug: DemoSlug }) {
         {modeLabel}
       </span>
       {slug === "quick" && <span className="text-phone-dim">{t("quick")}</span>}
+      {slug === "full-hour" && (
+        <span className="text-phone-dim">{t("fullHour")}</span>
+      )}
     </Link>
   );
 }

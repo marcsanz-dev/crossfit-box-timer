@@ -46,7 +46,7 @@ test("lists the demo workouts", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Entrenos de prueba",
   );
-  await expect(page.getByRole("link")).toHaveCount(4);
+  await expect(page.getByRole("link")).toHaveCount(5);
 });
 
 test("runs an EMOM: prep, intervals, rounds and stations", async ({

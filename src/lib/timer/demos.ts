@@ -30,6 +30,14 @@ export const DEMO_WORKOUTS = {
     prepSeconds: 5,
     stations: ["A", "B", "C"],
   }),
+  // A whole class, untouched: the endurance test for wake lock and audio.
+  "full-hour": workoutSchema.parse({
+    mode: "emom",
+    name: "Full hour",
+    intervalSeconds: 60,
+    rounds: 60,
+    stations: ["Row 12 cal", "10 wall balls", "Rest"],
+  }),
 } satisfies Record<string, Workout>;
 
 export type DemoSlug = keyof typeof DEMO_WORKOUTS;

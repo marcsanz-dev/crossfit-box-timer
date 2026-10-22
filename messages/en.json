@@ -16,7 +16,8 @@
   "Demos": {
     "title": "Demo workouts",
     "intro": "Try the timer on this phone without a coach account.",
-    "quick": "Quick test: 3 intervals of 20 s to check the beeps."
+    "quick": "Quick test: 3 intervals of 20 s to check the beeps.",
+    "fullHour": "Endurance test: 60 minutes without touching the phone, with beeps every minute."
   },
   "Mode": {
     "forTime": "FOR TIME · CAP {cap}",

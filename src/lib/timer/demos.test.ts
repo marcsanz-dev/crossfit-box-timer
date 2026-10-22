@@ -3,8 +3,14 @@ import { DEMO_SLUGS, DEMO_WORKOUTS, isDemoSlug } from "./demos";
 import { workoutSchema } from "./schema";
 
 describe("demo workouts", () => {
-  it("covers the three modes plus a quick test", () => {
-    expect(DEMO_SLUGS).toEqual(["for-time", "amrap", "emom", "quick"]);
+  it("covers the three modes plus a quick test and a full hour", () => {
+    expect(DEMO_SLUGS).toEqual([
+      "for-time",
+      "amrap",
+      "emom",
+      "quick",
+      "full-hour",
+    ]);
     const modes = new Set(Object.values(DEMO_WORKOUTS).map((w) => w.mode));
     expect(modes).toEqual(new Set(["forTime", "amrap", "emom"]));
   });
