@@ -182,3 +182,34 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 - **Wake lock behaviour on battery saver** needs a 60-minute real test.
 
 **Checks:** `pnpm check` (112 unit tests; coverage 99% statements, 98% branches) and `pnpm test:e2e` (55/55) pass.
+
+---
+
+## Phase 3 — First deploy + real-phone tests — 2026-10-22 (in progress)
+
+**What I asked**
+
+- Create the GitHub repository with `gh` (private for now, public at delivery) and push.
+- Guide me through creating the Vercel project from my GitHub account.
+
+**What Claude did**
+
+- **Before pushing,** scanned the tracked files for secrets (none) and checked that the repo name was free.
+- **Created `marcsanz-dev/crossfit-box-timer`** (private) with a description and topics, then pushed the 16 commits.
+- **Checked Vercel's current docs before writing the steps:**
+  - pnpm (package managers page, updated 2026-08-11): Vercel picks the pnpm version from the lockfile format. Ours (`lockfileVersion: '9.0'`) would be read by pnpm 9 or 10, not 12.
+  - Corepack (build configuration page, updated 2026-08-28): the env var `ENABLE_EXPERIMENTAL_COREPACK=1` makes Vercel use the exact `packageManager` version (pnpm 12.14.0).
+  - Node (Node.js versions page, updated 2026-02-27): `engines.node: "24.x"` selects Node 24, which is the default.
+- **I created the Vercel project** (Hobby, GitHub app restricted to this repository, only that env var). The first deploy succeeded: **https://crossfit-box-timer.vercel.app**.
+- **Verified production:**
+  - every route returns 200 in its language, and an unknown demo returns 404;
+  - pages are served prerendered from the CDN, and GitHub shows the Vercel status "Deployment has completed";
+  - in the browser pane the demo runs over HTTPS with Web Audio, the session is stored, and the console is clean;
+  - the pane denies the wake lock and the warning shows as designed. It still has to be confirmed on real phones.
+- **Wrote `docs/REAL-DEVICE-TESTS.md`,** a checklist for the Android and iPhone runs: quick checks, the 60-minute run on battery, and the iPhone Home Screen install.
+
+**What broke and what we changed**
+
+- **Nothing broke on deploy.** The only risk found was the pnpm version, and it was handled with Corepack before the first build.
+
+**Pending:** real-device results (see the checklist).

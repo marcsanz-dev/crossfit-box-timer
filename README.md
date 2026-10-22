@@ -8,7 +8,7 @@ A workout timer for the box **CrossFit Box**:
 - They send it to the phone mounted on the rig with a **QR code or a short code**.
 - The phone shows a **full-screen, high-contrast timer with beeps** that runs the whole class without anyone touching it.
 
-**Live URL:** _coming in Phase 3_ · **Languages:** Spanish (default), English, Catalan.
+**Live URL:** **https://crossfit-box-timer.vercel.app** · **Try the phone timer now:** [/t/demo](https://crossfit-box-timer.vercel.app/t/demo) · **Languages:** Spanish (default), English, Catalan.
 
 ## How to use it
 
@@ -18,7 +18,7 @@ _Coming in Phase 5._ Sign in with Google → choose a mode → configure it → 
 
 ### On the phone (rig)
 
-_Coming in Phase 5._
+Until the coach panel lands (Phase 5), open the built-in demo workouts at [`/t/demo`](https://crossfit-box-timer.vercel.app/t/demo).
 
 | Phone       | Recommended                                                                                                                                      |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
