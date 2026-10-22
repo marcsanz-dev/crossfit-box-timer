@@ -213,3 +213,24 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 - **Nothing broke on deploy.** The only risk found was the pnpm version, and it was handled with Corepack before the first build.
 
 **Pending:** real-device results (see the checklist).
+
+### Phase 3 — feedback from the first real-phone run (2026-10-22)
+
+**What I reported** (screenshot of the AMRAP demo in landscape on my phone):
+
+1. The exercises were cut with an ellipsis ("10 push-up…") although there was plenty of free space.
+2. After tapping to show the hidden controls, a second tap anywhere should hide them at once, instead of waiting for the 5 s auto-hide.
+
+**What Claude changed**
+
+1. **Truncated exercises.**
+   - Cause: a fixed `line-clamp-2` in landscape, while Cindy has three lines.
+   - Now, in landscape, where width is plentiful and height scarce, the exercises are joined on one row with " · ". In portrait they stay one per line, with room for up to 6 lines.
+   - Only an unusually long description is still clamped, so it can never shrink the clock.
+2. **Tap to hide.** The full-screen tap target is now a toggle, with `aria-expanded` and a "Hide controls" label in es / en / ca. While paused or finished the controls stay visible, so Resume and Stop never disappear.
+3. **New e2e tests,** on all 5 profiles:
+   - the description is visible and not clipped;
+   - a second tap hides the controls with no time passing.
+   - The first versions of the tap test failed: the click landed on overlays that only appear in the test browsers (the sound prompt in WebKit without Web Audio, the wake-lock alert in headless Chromium). The test now taps a free area at 35% of the height, like a person would.
+
+**Checks:** `pnpm check` (113 unit tests) and `pnpm test:e2e` (65/65) pass.
