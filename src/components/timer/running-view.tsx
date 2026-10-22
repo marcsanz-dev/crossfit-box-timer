@@ -119,12 +119,29 @@ function Details({ workout, display }: Omit<RunningViewProps, "status">) {
           {t("capIn", { time: formatClock(display.workoutRemainingSeconds) })}
         </p>
       )}
-      {workout.description && (
-        <p className="line-clamp-3 text-[clamp(0.9rem,4.4cqmin,2.5rem)] leading-snug whitespace-pre-line text-phone-dim landscape:line-clamp-2">
-          {workout.description}
-        </p>
-      )}
+      {workout.description && <Description text={workout.description} />}
     </>
+  );
+}
+
+/**
+ * Exercises, one per line in portrait. In landscape the width is plentiful but
+ * height is scarce, so the lines are joined with " · " on a single row.
+ * Only an unusually long description is clamped, so it never shrinks the clock.
+ */
+function Description({ text }: { text: string }) {
+  const lines = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return (
+    <p className="text-[clamp(0.9rem,4.4cqmin,2.5rem)] leading-snug text-phone-dim">
+      <span className="line-clamp-6 whitespace-pre-line landscape:hidden">
+        {lines.join("\n")}
+      </span>
+      <span className="line-clamp-2 portrait:hidden">{lines.join(" · ")}</span>
+    </p>
   );
 }
 

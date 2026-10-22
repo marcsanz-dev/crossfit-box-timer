@@ -37,6 +37,7 @@
     "finished": "DONE",
     "paused": "Paused",
     "showControls": "Show controls",
+    "hideControls": "Hide controls",
     "pause": "Pause",
     "resume": "Resume",
     "restart": "Restart",

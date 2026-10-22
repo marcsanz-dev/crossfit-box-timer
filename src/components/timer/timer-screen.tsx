@@ -57,11 +57,15 @@ export function TimerScreen({
     <main className="relative h-dvh overflow-hidden select-none">
       <RunningView workout={workout} display={runner.display} status={status} />
 
-      {/* The whole screen is one big button that reveals the controls. */}
+      {/*
+        The whole screen is one big toggle: one tap shows the controls, the next
+        hides them at once. While paused or finished they always stay visible.
+      */}
       <button
         type="button"
-        aria-label={t("showControls")}
-        onClick={() => setControlsOpen(true)}
+        aria-label={t(showControls ? "hideControls" : "showControls")}
+        aria-expanded={showControls}
+        onClick={() => setControlsOpen((open) => !open)}
         className="absolute inset-0 z-10 cursor-default"
       />
 
