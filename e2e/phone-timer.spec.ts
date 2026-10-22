@@ -111,6 +111,23 @@ test("AMRAP counts down from the full duration", async ({ page }, testInfo) => {
   await page.screenshot({ path: testInfo.outputPath("amrap.png") });
 });
 
+test("shows every exercise line without truncating it", async ({ page }) => {
+  await page.goto("/t/demo/amrap");
+  await page.getByRole("button", { name: "Empezar" }).click();
+  await advance(page, 10_000);
+
+  const description = page.locator("span:visible", {
+    hasText: "15 air squats",
+  });
+  await expect(description).toBeVisible();
+  await expect(description).toContainText("5 pull-ups");
+  // A clamped element scrolls internally: its content would be taller than its box.
+  const clipped = await description.evaluate(
+    (el) => el.scrollHeight > el.clientHeight + 1,
+  );
+  expect(clipped).toBe(false);
+});
+
 test("resumes at the right second after a reload", async ({ page }) => {
   await page.goto("/t/demo/quick");
   await page.getByRole("button", { name: "Empezar" }).click();
@@ -168,4 +185,25 @@ test("controls hide themselves after a few seconds", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Pausar" })).toBeVisible();
   await advance(page, 6_000);
   await expect(page.getByRole("button", { name: "Pausar" })).toBeHidden();
+});
+
+test("a second tap hides the controls at once", async ({ page }) => {
+  await page.goto("/t/demo/amrap");
+  await page.getByRole("button", { name: "Empezar" }).click();
+
+  await page.getByRole("button", { name: "Mostrar controles" }).click();
+  await expect(page.getByRole("button", { name: "Pausar" })).toBeVisible();
+
+  // No time passes: the controls must hide on the tap, not on the timeout.
+  // Tap a free area, like a person would: below the wake-lock alert that headless
+  // Chromium shows at the top, and above the bottom stack (controls, plus the sound
+  // prompt that WebKit without Web Audio shows).
+  const { height } = page.viewportSize() ?? { height: 800 };
+  await page
+    .getByRole("button", { name: "Ocultar controles" })
+    .click({ position: { x: 20, y: Math.round(height * 0.35) } });
+  await expect(page.getByRole("button", { name: "Pausar" })).toBeHidden();
+  await expect(
+    page.getByRole("button", { name: "Mostrar controles" }),
+  ).toHaveAttribute("aria-expanded", "false");
 });
