@@ -44,7 +44,26 @@ pnpm dev          # http://localhost:3000
 | `pnpm test:e2e`                                | End-to-end tests (Playwright; first run `pnpm exec playwright install chromium webkit`) |
 | `pnpm check`                                   | Lint + typecheck + format check + unit tests                                            |
 
-Environment variables: _added in Phase 4_ (`.env.example` will list them).
+### Environment variables
+
+The timer pages build and run without any secrets. The coach area needs these:
+
+1. Copy [`.env.example`](.env.example) to `.env.local` and fill it in:
+   - a Neon Postgres connection string;
+   - a random `BETTER_AUTH_SECRET`;
+   - a Google OAuth web client, with `http://localhost:3000/api/auth/callback/google` as a redirect URI;
+   - optionally, your own email in `AUTH_EXTRA_EMAILS` to test sign-in locally.
+2. Create the tables:
+
+```bash
+pnpm db:migrate
+```
+
+| Script                                     | What it does                                                               |
+| ------------------------------------------ | -------------------------------------------------------------------------- |
+| `pnpm db:generate`                         | Create a SQL migration from the Drizzle schema                             |
+| `pnpm db:migrate` / `pnpm db:migrate:prod` | Apply migrations to the database in `.env.local` / `.env.production.local` |
+| `pnpm auth:generate`                       | Regenerate the Better Auth tables in `src/db/schema/auth.ts`               |
 
 ## Assumptions & decisions
 
@@ -55,6 +74,8 @@ Assumptions made instead of asking the client. Full reasoning is in [`docs/PLAN.
    - Only verified Google accounts whose ID token carries `hd = yaqbot.com` can configure workouts. An email that merely ends in `@yaqbot.com` is not enough, per Google's guidance.
    - **Developer testing:** a list of extra emails (`AUTH_EXTRA_EMAILS`) is set **only** in local Development and Vercel **Preview**, never in Production.
    - The code also ignores that list whenever `VERCEL_ENV` is `production`. So the live URL follows the @yaqbot.com rule 100%, even if the variable were set there by mistake.
+   - **Two independent checks in production.** Better Auth's Google `hd` option already rejects tokens from other domains, and our own rule runs on every sign-in.
+   - **Separate data.** Preview and local development use a separate Neon branch (`dev`), so test accounts never reach the production database.
 3. **The coach starts the timer** by tapping **Start** on the phone just before the workout. That tap also unlocks audio and the wake lock.
 4. **Sound** comes from the phone speaker by default; Bluetooth speakers are also supported.
 5. **The phone may run on battery.** We still recommend charging it and disabling power-saving modes.

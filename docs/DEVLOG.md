@@ -295,3 +295,41 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 
 - **Done:** repository, Vercel production deploy, the fit-the-screen rule, and two rounds of real-phone fixes on the OnePlus 10T (Android Chrome: fullscreen works, digits are bold).
 - **Moved on at my request:** the rest of `docs/REAL-DEVICE-TESTS.md` (sound at 3 m, the 60-minute run on battery, the iPhone checks) will be run in parallel with Phase 4. Its results will be logged here when they arrive.
+
+---
+
+## Phase 4 — Auth + DB — 2026-10-23
+
+**What I asked**
+
+- Move straight on to Phase 4 after the last controls fix.
+- I created the Neon project (its default branch is called `production`, not `main`), the Google Cloud OAuth client (published "In production") and the Vercel environment variables, following Claude's steps.
+- I asked for a clearer explanation of where each Vercel variable comes from.
+
+**What Claude did**
+
+- **Verified the current versions and APIs** on npm and in the installed type definitions (2026-10-23): Better Auth 1.7.12 with `@better-auth/drizzle-adapter`, Drizzle 0.45.4 / drizzle-kit 0.31.11, `@neondatabase/serverless` 1.2.
+  - The raw Google claims reach `user.validateUserInfo` as `source.oauth.profile`. The Google provider's `hd` option rejects tokens without the claim.
+- **`src/lib/auth/coach-access.ts`:** the pure access rule, with 23 tests. It covers the traps: a consumer account with an @yaqbot.com address, another Workspace domain, an unverified email, and the dev allowlist in production versus Preview versus an unknown host.
+- **Better Auth, with Google as the only method:**
+  - the rule runs on every sign-in, including returning users;
+  - production also pins `hd=yaqbot.com`, an independent second check;
+  - `/coach` checks the session on the server, and `/coach/denied` explains rejections, in es / en / ca.
+- **Drizzle + Neon:**
+  - the auth tables are generated with the official CLI (`auth`), with the first SQL migration;
+  - migrations are applied to both Neon branches, and the tables were verified by listing them;
+  - env vars are validated with Zod, lazily, so static pages build without secrets.
+- **Git workflow:** work happens on `dev`, which has a stable Preview URL registered in Google. `main` is fast-forwarded once a change is verified.
+- **Checked from outside:**
+  - **Locally:** the Google redirect is correct, with PKCE, minimal scopes and no `hd`, so my Gmail can test.
+  - **In production:** `/coach` and `/coach/denied` render, there is no session without a cookie, and the Google request carries `hd=yaqbot.com` with the production callback.
+
+**What broke and what we changed**
+
+1. **The production build tried to create auth at prerender time and failed on missing secrets.** In `getAuth().api.getSession({ headers: await headers() })`, the call `getAuth()` runs before `await headers()`. → Read the headers first, which is where prerendering stops. Documented in `CLAUDE.md`.
+2. **Coverage dropped below 95%** because the Better Auth wiring sat in `src/lib`. → Moved it to `src/auth/`: framework wiring is not pure logic.
+3. **A PowerShell script used `$home` as a variable,** which is read-only in PowerShell, and broke the message JSON files. → Repaired with targeted edits and validated with `JSON.parse`.
+4. **`.env.local` had `AUTH_EXTRA_EMAILS` twice,** the second one empty (copied from `.env.example`). The last one wins, so my Gmail would have been rejected locally. → Claude checked the file without printing any values and removed only the empty line.
+5. **Right after the production deploy, `/coach` returned 404 for a few seconds** while the domain switched to the new deployment. A second check with a cache-busting query showed 200. Nothing to fix.
+
+**Pending (acceptance):** my real sign-in tests. My Gmail must work on the Preview and locally, and must be **rejected** on Production.

@@ -42,18 +42,20 @@ Deadline: **2026-10-26 23:59 Europe/Madrid**.
 
 ## Stack (verified 2026-10-21)
 
-| Piece                                             | Version                                                           | Notes                                                                                                    |
-| ------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Next.js (App Router, Turbopack, Cache Components) | 16.4.2                                                            | `proxy.ts` replaces `middleware.ts`                                                                      |
-| React                                             | 19.3.1                                                            |                                                                                                          |
-| TypeScript                                        | 6.0.x (strict)                                                    | TS 7 is stable but has no programmatic API until 7.1, which typescript-eslint and Next tooling need      |
-| Node.js / pnpm                                    | 24.x / 12.14.0                                                    | `engines` and `packageManager` are pinned                                                                |
-| Tailwind CSS                                      | 4.3                                                               | Configured via the `@tailwindcss/turbopack` loader in `next.config.ts` (create-next-app default)         |
-| next-intl                                         | 4.14                                                              | `es` (default, no prefix), `/en`, `/ca`; browser detection off                                           |
-| ESLint                                            | **9.39** + `eslint-config-next` 16.4.2 + `eslint-config-prettier` | Not 10: `eslint-plugin-react`, `jsx-a11y` and `import` don't support ESLint 10 yet                       |
-| Prettier                                          | 3.9 + `prettier-plugin-tailwindcss`                               |                                                                                                          |
-| Vitest / Playwright                               | 5.0 / 1.64                                                        | Playwright projects: desktop, iPhone 17 (WebKit) and Pixel 10 (Chromium), each in portrait and landscape |
-| Planned (Phase 4+)                                | Better Auth ≥1.7.12, Drizzle 0.45 + Neon, Zod 4, qrcode, nanoid   | Verify versions again when installing                                                                    |
+| Piece                                             | Version                                                           | Notes                                                                                                     |
+| ------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Next.js (App Router, Turbopack, Cache Components) | 16.4.2                                                            | `proxy.ts` replaces `middleware.ts`                                                                       |
+| React                                             | 19.3.1                                                            |                                                                                                           |
+| TypeScript                                        | 6.0.x (strict)                                                    | TS 7 is stable but has no programmatic API until 7.1, which typescript-eslint and Next tooling need       |
+| Node.js / pnpm                                    | 24.x / 12.14.0                                                    | `engines` and `packageManager` are pinned                                                                 |
+| Tailwind CSS                                      | 4.3                                                               | Configured via the `@tailwindcss/turbopack` loader in `next.config.ts` (create-next-app default)          |
+| next-intl                                         | 4.14                                                              | `es` (default, no prefix), `/en`, `/ca`; browser detection off                                            |
+| ESLint                                            | **9.39** + `eslint-config-next` 16.4.2 + `eslint-config-prettier` | Not 10: `eslint-plugin-react`, `jsx-a11y` and `import` don't support ESLint 10 yet                        |
+| Prettier                                          | 3.9 + `prettier-plugin-tailwindcss`                               |                                                                                                           |
+| Vitest / Playwright                               | 5.0 / 1.64                                                        | Playwright projects: desktop, iPhone 17 (WebKit) and Pixel 10 (Chromium), each in portrait and landscape  |
+| Better Auth (+ `@better-auth/drizzle-adapter`)    | 1.7.12 (verified 2026-10-23)                                      | Google only; `user.validateUserInfo` applies the coach rule; CLI package is `auth` (`pnpm auth:generate`) |
+| Drizzle ORM / drizzle-kit + Neon                  | 0.45.4 / 0.31.11, `@neondatabase/serverless` 1.2                  | WebSocket `Pool` (Better Auth needs transactions); Neon branches `dev` and `production` (us-east-1)       |
+| Zod                                               | 4.6                                                               | Planned for Phase 5: `qrcode`, `nanoid` (verify versions when installing)                                 |
 
 ## Commands
 
@@ -66,6 +68,10 @@ pnpm format         # Prettier write (format:check to verify)
 pnpm test           # Vitest unit tests (test:watch, test:coverage)
 pnpm test:e2e       # Playwright (builds and serves on port 3100)
 pnpm check          # lint + typecheck + format:check + test
+pnpm db:generate    # SQL migration from the Drizzle schema (drizzle/)
+pnpm db:migrate     # apply migrations to the Neon dev branch (.env.local)
+pnpm db:migrate:prod # apply migrations to Neon production (.env.production.local)
+pnpm auth:generate  # regenerate src/db/schema/auth.ts with the Better Auth CLI
 ```
 
 Run `pnpm check` before every commit and `pnpm test:e2e` before closing a phase.
@@ -88,15 +94,30 @@ src/
   hooks/                   # client hooks (useWorkoutRunner orchestrates the phone timer)
   components/timer/        # phone timer UI (ready screen, running view, controls, confirm dialog)
   app/[locale]/t/          # phone routes (dark layout, safe areas); /t/demo/[slug] for demo workouts
+  lib/auth/coach-access.ts # pure coach access rule (hd=yaqbot.com; dev allowlist outside production)
+  auth/                    # Better Auth wiring: server.ts (lazy getAuth) and client.ts
+  db/                      # Drizzle client (lazy getDb) and schema/ (auth tables generated by the CLI)
+  env.ts                   # Zod-validated server env, read lazily (builds need no secrets)
+  app/[locale]/coach/      # coach area: sign-in, session check on the server, /coach/denied
+  app/api/auth/[...all]/   # Better Auth route handler
   proxy.ts                 # next-intl locale middleware
   global.ts                # next-intl type augmentation
+drizzle/                   # SQL migrations (committed)
+auth.cli.ts                # entry point for the Better Auth CLI only
 ```
 
-Planned (see PLAN.md §6):
+Planned (see PLAN.md §6): routes `/t` and `/t/[code]`, workout presets and shares (Phase 5).
 
-- `src/lib/auth/`: Better Auth and the `isAllowedCoach` rule;
-- `src/db/`: Drizzle schema;
-- routes `/coach`, `/t`, `/t/[code]`.
+## Environments and branches
+
+| Git branch | Vercel     | URL                                                                                  | Neon branch  |
+| ---------- | ---------- | ------------------------------------------------------------------------------------ | ------------ |
+| `dev`      | Preview    | `https://crossfit-box-timer-git-dev-marcsanz-dev.vercel.app` (Vercel Authentication) | `dev`        |
+| `main`     | Production | `https://crossfit-box-timer.vercel.app`                                              | `production` |
+
+- **Work happens on `dev`.** `main` is fast-forwarded from it once a change is verified on the Preview.
+- **Env var names** are in `.env.example`.
+- **`AUTH_EXTRA_EMAILS`** exists only in `.env.local` and in Vercel Preview (branch `dev`).
 
 ## Conventions
 
@@ -120,5 +141,6 @@ Planned (see PLAN.md §6):
 - **next-intl `createMessagesDeclaration`** generates `messages/*.d.json.ts` (git-ignored). It needs `allowArbitraryExtensions` in `tsconfig.json`.
 - **Phone robustness rule.** Every device unlock (audio, wake lock, fullscreen) is best-effort and wrapped. The clock must start and keep running even if all of them fail.
 - **E2E with fake time.** Use `page.clock.install` + `pauseAt`, then `fastForward` + a short `runFor` (see `advance()` in `e2e/phone-timer.spec.ts`). Playwright's WebKit on Windows has no Web Audio.
+- **Auth reads secrets lazily.** In server components, `await headers()` **before** calling `getAuth()`: arguments are evaluated first, and `headers()` is what stops prerendering at build time.
 - **Previewing locally:** `.claude/launch.json` (git-ignored) defines `prod` (port 3200) and `dev` (port 3000) for the browser pane. Stop the server before `pnpm build`.
 - **Dependency build scripts** are disabled in `pnpm-workspace.yaml` (`allowBuilds`). Prebuilt binaries are enough.
