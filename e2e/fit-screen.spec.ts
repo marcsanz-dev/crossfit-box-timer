@@ -53,6 +53,26 @@ test.beforeEach(async ({ page, browserName }) => {
   await emulateSafeArea(page, browserName);
 });
 
+test("phone home and 'not found' fit, with safe areas", async ({ page }) => {
+  // No timer here: let time flow, or React can't finish streaming the page in.
+  await page.clock.resume();
+  await page.goto("/t");
+  await expectNoScroll(page);
+  await expectFullyVisible(
+    page.getByRole("textbox", { name: "Código del entreno" }),
+  );
+  await expectFullyVisible(page.getByRole("button", { name: "Abrir" }));
+  await expectFullyVisible(
+    page.getByRole("link", { name: "Entrenos de prueba" }),
+  );
+
+  await page.goto("/t/O0O0O0");
+  await expectNoScroll(page);
+  await expectFullyVisible(
+    page.getByRole("link", { name: "Probar otro código" }),
+  );
+});
+
 for (const slug of ["amrap", "emom", "for-time", "full-hour"]) {
   test(`${slug}: every screen fits, with safe areas`, async ({ page }) => {
     await page.goto(`/t/demo/${slug}`);
