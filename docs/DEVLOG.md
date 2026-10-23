@@ -234,3 +234,42 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
    - The first versions of the tap test failed: the click landed on overlays that only appear in the test browsers (the sound prompt in WebKit without Web Audio, the wake-lock alert in headless Chromium). The test now taps a free area at 35% of the height, like a person would.
 
 **Checks:** `pnpm check` (113 unit tests) and `pnpm test:e2e` (65/65) pass.
+
+### Phase 3 — second real-phone report: screens taller than the phone (2026-10-23)
+
+**What I reported** (OnePlus 10T, Chrome, screenshots):
+
+- **Landscape:** with the controls open, the buttons were cut off at the bottom.
+- **Portrait:** I had to scroll to see the progress bar, the exercises and the full buttons.
+- I asked for a permanent rule: everything visible on the main screen, without ever scrolling, on any device.
+
+**Cause** (found by Claude)
+
+- The phone layout padded itself with the safe-area insets (the punch-hole camera, the gesture bar).
+- Inside it, the timer was `h-dvh`, i.e. 100% of the viewport height.
+- Height plus padding is taller than the screen, by exactly the inset. That pushed the header down and cut the bottom off.
+- Emulated devices have no safe areas, so the existing overflow checks passed.
+
+**What Claude did**
+
+1. **Reproduced it first.**
+   - New `e2e/fit-screen.spec.ts` emulates safe-area insets through CDP (`Emulation.setSafeAreaInsetsOverride`, Chromium only).
+   - It checks every screen: ready, running, controls open, and the confirmation dialog.
+   - It checks four demos: no scroll, and the timer, progress bar, Start button, checklist and every control button fully inside the viewport.
+   - It failed on every Chromium profile, as on the real phone.
+2. **Fixed it at the root.**
+   - New `PhoneFrame`: fixed to the viewport edges, with the safe areas as inner padding and a size container inside.
+   - Every timer screen now lives in it and sizes itself with `h-full` and container query units, never viewport units.
+   - The ready screen, controls bar, sound prompt and dialog scale with the frame (`cqmin`, with sensible minimums). The ready screen keeps a 48px+ Start button.
+   - Only coach-written text may clamp.
+   - The progress bar got `role="progressbar"`: it is accessible, and the test can find it.
+3. **The rule is now written down** in `CLAUDE.md` (working rule 9), `docs/PLAN.md` (R3 and §6) and Claude's memory, so every future phone UI must follow it and be added to the test.
+
+**What else broke on the way**
+
+- **On WebKit, the very first tap on "Empezar" was swallowed** after the redesign. React had not attached the click handler to the server-rendered button yet, so the tap did nothing and logged no error.
+  - Found by checking the hit target, hydration and console step by step.
+  - → The Start button is now **disabled until hydration**, so an early tap is never silently lost. That can matter on a slow phone too, not only in tests, and Playwright waits for it automatically.
+- **The first version of the test tried to use CDP on WebKit,** which only Chromium supports. → It now uses the `browserName` fixture.
+
+**Checks:** `pnpm check` (113 unit tests) and `pnpm test:e2e` (85/85, including 20 fit-the-screen runs) pass.

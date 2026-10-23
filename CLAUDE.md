@@ -31,6 +31,14 @@ Deadline: **2026-10-26 23:59 Europe/Madrid**.
    - **Do not create the GitHub repo or push** until the developer says so.
 7. The conversation log is delivered to the client: stay on topic.
 8. **Priority:** the 5 minimum requirements working flawlessly on a real phone. Extras come after.
+9. **Fit-the-screen rule (phone).**
+   - Every phone timer screen (ready, running, paused, finished, with controls, prompts or dialogs open) fits the visible screen completely: **no scrolling and nothing cut off**.
+   - It applies on any device and in portrait and landscape, including safe areas (camera cut-outs, gesture bars).
+   - How:
+     - render inside `PhoneFrame` (`src/components/timer/phone-frame.tsx`);
+     - size with `h-full` and container query units (`cqmin`, `cqw`, `cqh`), never with `vh` / `dvh`;
+     - let only coach-written text shrink or clamp.
+   - It is enforced by `e2e/fit-screen.spec.ts`, which emulates safe areas on Chromium. Every new phone UI must be added to that test.
 
 ## Stack (verified 2026-10-21)
 

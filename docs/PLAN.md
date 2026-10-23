@@ -17,13 +17,13 @@ Deadline: **Monday 2026-10-26, 23:59 (Europe/Madrid)**. Suggested effort is 3–
 
 ## 2. Minimum requirements (must)
 
-| #   | Requirement                                                               | How we meet it                                                                                                                                                          |
-| --- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| R1  | Desktop setup: For Time (with cap), AMRAP, EMOM; each configurable        | Coach panel with one form per mode, validated on client and server                                                                                                      |
-| R2  | Desktop → phone                                                           | The coach clicks "Send to phone" and gets a **short code + QR**. The phone opens `/t/<code>` (no login), downloads the workout once and then runs offline               |
-| R3  | Full-screen, readable, sound cues, a full session untouched               | Huge tabular digits, dark high-contrast UI, Web Audio beeps scheduled on the audio clock, Screen Wake Lock, wall-clock timing, self-recovery                            |
-| R4  | Google sign-in, any `@yaqbot.com` account (tested with `hola@yaqbot.com`) | Better Auth + Google provider. The rule is enforced **server-side**: a verified email plus the ID-token claim `hd === "yaqbot.com"`. The OAuth app is **In production** |
-| R5  | Online at a URL                                                           | Vercel (Hobby, free), with Neon Postgres (free)                                                                                                                         |
+| #   | Requirement                                                               | How we meet it                                                                                                                                                                                                                                                     |
+| --- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| R1  | Desktop setup: For Time (with cap), AMRAP, EMOM; each configurable        | Coach panel with one form per mode, validated on client and server                                                                                                                                                                                                 |
+| R2  | Desktop → phone                                                           | The coach clicks "Send to phone" and gets a **short code + QR**. The phone opens `/t/<code>` (no login), downloads the workout once and then runs offline                                                                                                          |
+| R3  | Full-screen, readable, sound cues, a full session untouched               | Huge tabular digits, dark high-contrast UI, Web Audio beeps scheduled on the audio clock, Screen Wake Lock, wall-clock timing, self-recovery. **Every phone screen fits the visible screen with no scrolling and nothing cut off** (rule added 2026-10-23, see §6) |
+| R4  | Google sign-in, any `@yaqbot.com` account (tested with `hola@yaqbot.com`) | Better Auth + Google provider. The rule is enforced **server-side**: a verified email plus the ID-token claim `hd === "yaqbot.com"`. The OAuth app is **In production**                                                                                            |
+| R5  | Online at a URL                                                           | Vercel (Hobby, free), with Neon Postgres (free)                                                                                                                                                                                                                    |
 
 ## 3. Workout modes (domain spec)
 
@@ -145,6 +145,20 @@ The phone page also detects iPhone Safari outside the Home Screen app and sugges
   - A look-ahead loop schedules cues on `AudioContext.currentTime` about 1–2 s ahead, so beeps are sample-accurate even when the main thread is slow.
   - It compensates `outputLatency`, so Bluetooth speakers beep in sync with the display.
 
+### Fit-the-screen rule (added 2026-10-23, after the first real-phone test)
+
+Every phone timer screen fits the visible screen completely, with no scrolling and nothing cut off:
+
+- **Screens covered:** ready, running, paused, finished, and with controls, prompts or dialogs open.
+- **Where:** any device, in portrait and landscape, including safe areas (camera cut-outs, gesture bars).
+
+How it is achieved and enforced:
+
+- **One frame.** All screens render inside one `PhoneFrame`: fixed to the viewport, with safe areas as inner padding.
+- **Sizing.** Content uses `h-full` and container query units. Viewport units (`vh` / `dvh`) are not used: they ignore the safe-area padding, and that was the cause of the OnePlus 10T bug.
+- **Flexible text.** Only coach-written text (descriptions, station names) may shrink or clamp.
+- **Test.** `e2e/fit-screen.spec.ts` checks it on every profile, and emulates safe-area insets on Chromium.
+
 ### Phone robustness ("untouched for a whole class")
 
 **On the Start tap**, all of this happens inside one user gesture:
@@ -232,6 +246,7 @@ Each phase ends with: tests green, a DEVLOG entry, a plain-language explanation 
 - `/t/demo`: Ready screen, Start, prep, timer, finished screen; audio scheduler and beeps; wake lock; Android fullscreen; hidden controls with confirmation; localStorage resume; responsive portrait and landscape.
 - ✅ Done when:
   - Playwright screenshots on the iPhone 17 / Pixel 10 profiles in both orientations show no overflow;
+  - (added 2026-10-23) `e2e/fit-screen.spec.ts` proves that every phone screen fits with emulated safe areas, with no scroll and every button complete;
   - a manual desktop check confirms beeps fire at the right seconds;
   - a reload mid-workout resumes at the correct time.
 
