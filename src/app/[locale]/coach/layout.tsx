@@ -1,5 +1,6 @@
 import type { Viewport } from "next";
 import { useTranslations } from "next-intl";
+import { Suspense } from "react";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Link } from "@/i18n/navigation";
 
@@ -22,7 +23,10 @@ export default function CoachLayout({
               {t("area")}
             </span>
           </Link>
-          <LocaleSwitcher />
+          {/* It reads the current path, which is request-time data on dynamic routes. */}
+          <Suspense fallback={null}>
+            <LocaleSwitcher />
+          </Suspense>
         </div>
       </header>
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-6 py-10">

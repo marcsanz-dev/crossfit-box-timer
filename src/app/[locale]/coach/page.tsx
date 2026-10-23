@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 import { SignInButton, SignOutButton } from "@/components/coach/auth-buttons";
+import { WorkoutBuilder } from "@/components/coach/workout-builder";
 import { getAuth } from "@/auth/server";
 
 export default function CoachPage() {
@@ -25,20 +26,20 @@ async function CoachGate() {
   if (!session) return <SignInCard />;
 
   const t = await getTranslations("Coach");
+  const tb = await getTranslations("Builder");
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex flex-col gap-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black">
-            {t("welcome", { name: session.user.name })}
-          </h1>
-          <p className="text-coach-muted">{session.user.email}</p>
+          <p className="text-sm text-coach-muted">
+            {t("welcome", { name: session.user.name })} · {session.user.email}
+          </p>
+          <h1 className="mt-1 text-3xl font-black">{tb("title")}</h1>
+          <p className="text-coach-muted">{tb("intro")}</p>
         </div>
         <SignOutButton />
       </div>
-      <p className="rounded-2xl border border-dashed border-coach-line p-6 text-coach-muted">
-        {t("comingSoon")}
-      </p>
+      <WorkoutBuilder />
     </section>
   );
 }
