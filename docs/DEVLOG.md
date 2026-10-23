@@ -427,3 +427,33 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 - **My end-to-end check with a real sign-in:** build each mode on the desktop, send it, open it on the phone via QR **and** via code, with Wi-Fi off after loading.
 - **Visual review of `/coach` and `/coach/share/[code]`.** They need a session, so Claude could not screenshot them.
 - **Deploy:** push `dev`, verify the Preview, then fast-forward `main`.
+
+### Phase 5 — first feedback on the Preview (2026-10-23)
+
+**What I reported**
+
+1. Scanning the QR (or opening the link) on my phone sent me to a Vercel sign-up page.
+2. I want to pass the code and the link from WhatsApp on the computer to WhatsApp on the phone: the link should be clickable, and both should be easy to copy.
+
+**Cause and decision (1):** the Preview has Vercel Authentication on, so only logged-in Vercel users with access can open it. That's not a bug in the app.
+
+- I turn it off for this project in Vercel (Settings → Deployment Protection).
+- Production was never behind it.
+- The coach area stays protected by the Google sign-in and the access rule. The phone routes are public by design.
+
+**What Claude changed (2)**
+
+- The share page now shows the **direct link** (`…/t/CODE`) as a real link, opening in a new tab so the QR stays on screen.
+- Both the code and the link have a **copy button** (Clipboard API) with "Copied" feedback.
+- If the browser denies clipboard access, the page says so and asks to copy by hand.
+- The "or open … and type the code" address is a link too.
+- The old "open on this device" button was removed, since the direct link does the same.
+- The view moved to `src/components/coach/share-view.tsx`.
+
+**How it was checked**
+
+- **Copy buttons and layout:** checked in the browser pane through a temporary page (deleted) with sample data, because `/coach` needs my sign-in.
+  - Light and dark themes look right.
+  - The copied values are `8CB JNV` and the full URL.
+  - The denied-clipboard message shows.
+- **Checks:** `pnpm check` passes.

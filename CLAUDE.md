@@ -101,7 +101,7 @@ src/
   auth/                    # Better Auth wiring: server.ts (lazy getAuth) and client.ts
   db/                      # Drizzle client (lazy getDb), schema/ (auth + share), shares.ts (create/read snapshots)
   env.ts                   # Zod-validated server env, read lazily (builds need no secrets)
-  components/coach/        # coach UI: auth buttons, workout builder, form controls, phone preview
+  components/coach/        # coach UI: auth buttons, workout builder, form controls, phone preview, share view (QR, copy code/link)
   app/[locale]/coach/      # coach area: builder (/coach), actions.ts (createShareAction), share/[code] (QR + code), denied
   app/api/auth/[...all]/   # Better Auth route handler
   proxy.ts                 # next-intl locale middleware
