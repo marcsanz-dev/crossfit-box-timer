@@ -201,11 +201,11 @@ AND (
 
 ### Environments
 
-| Env         | URL                                             | DB                 | Extra emails |
-| ----------- | ----------------------------------------------- | ------------------ | ------------ |
-| Development | `http://localhost:3000`                         | Neon branch `dev`  | yes          |
-| Preview     | stable branch URL `…-git-<branch>-….vercel.app` | Neon branch `dev`  | yes          |
-| Production  | `<project>.vercel.app`                          | Neon branch `main` | **no**       |
+| Env         | URL                                                                     | DB                       | Extra emails |
+| ----------- | ----------------------------------------------------------------------- | ------------------------ | ------------ |
+| Development | `http://localhost:3000`                                                 | Neon branch `dev`        | yes          |
+| Preview     | `crossfit-box-timer-git-dev-marcsanz-dev.vercel.app` (Git branch `dev`) | Neon branch `dev`        | yes          |
+| Production  | `crossfit-box-timer.vercel.app`                                         | Neon branch `production` | **no**       |
 
 **Google OAuth on Preview:** Google forbids wildcard redirect URIs, and each preview deployment has a different URL. We register the **stable branch URL** of one preview branch as an extra redirect URI and scope `BETTER_AUTH_URL` to that branch in Vercel.
 

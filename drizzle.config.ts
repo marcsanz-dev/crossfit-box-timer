@@ -2,7 +2,7 @@ import { defineConfig } from "drizzle-kit";
 
 // drizzle-kit does not read Next.js env files, so load one explicitly:
 // .env.local (Neon "dev" branch) by default, or DB_ENV_FILE=.env.production.local
-// to migrate the production branch. Missing files are fine (CI sets env directly).
+// to migrate the Neon "production" branch. Missing files are fine (CI sets env directly).
 try {
   process.loadEnvFile(process.env.DB_ENV_FILE ?? ".env.local");
 } catch {
