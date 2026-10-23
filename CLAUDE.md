@@ -142,5 +142,7 @@ Planned (see PLAN.md §6): routes `/t` and `/t/[code]`, workout presets and shar
 - **Phone robustness rule.** Every device unlock (audio, wake lock, fullscreen) is best-effort and wrapped. The clock must start and keep running even if all of them fail.
 - **E2E with fake time.** Use `page.clock.install` + `pauseAt`, then `fastForward` + a short `runFor` (see `advance()` in `e2e/phone-timer.spec.ts`). Playwright's WebKit on Windows has no Web Audio.
 - **Auth reads secrets lazily.** In server components, `await headers()` **before** calling `getAuth()`: arguments are evaluated first, and `headers()` is what stops prerendering at build time.
+- **Stale CSS in `pnpm dev`:** Turbopack's persistent dev cache sometimes misses an edit to `globals.css`. If the served CSS doesn't match the file, stop the server, delete `.next/` and start it again.
+- **Coach theme:** light and dark tokens (`--coach-*`), with `colorScheme: "light dark"` declared, so browsers never auto-darken it. `e2e/coach-theme.spec.ts` checks the contrast in both modes.
 - **Previewing locally:** `.claude/launch.json` (git-ignored) defines `prod` (port 3200) and `dev` (port 3000) for the browser pane. Stop the server before `pnpm build`.
 - **Dependency build scripts** are disabled in `pnpm-workspace.yaml` (`allowBuilds`). Prebuilt binaries are enough.

@@ -333,3 +333,33 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 5. **Right after the production deploy, `/coach` returned 404 for a few seconds** while the domain switched to the new deployment. A second check with a cache-busting query showed 200. Nothing to fix.
 
 **Pending (acceptance):** my real sign-in tests. My Gmail must work on the Preview and locally, and must be **rejected** on Production.
+
+### Phase 4 — acceptance and a dark-mode fix (2026-10-23)
+
+**Results of my three sign-in tests**
+
+- ✅ **Local:** my Gmail signs in and out.
+- ✅ **Preview (`dev`):** my Gmail signs in and out.
+- ✅ **Production:** my Gmail is **rejected**. Phase 4 accepted.
+
+**What I reported:** locally, in my browser's dark mode, the black "Entrar con Google" button was indistinguishable from the background.
+
+**Cause**
+
+- The coach panel had light colours only. In dark mode the browser darkened the page itself: the background turned dark, but the already-dark button did not change.
+
+**What Claude changed**
+
+- **A real dark theme for the coach area.** The `--coach-*` CSS variables switch with `prefers-color-scheme`, and the layout declares `colorScheme: "light dark"`, so browsers no longer auto-darken it. In dark mode the primary button becomes light on a dark card.
+- **New `e2e/coach-theme.spec.ts`,** in light and dark:
+  - button versus card ≥ 3:1 (WCAG 1.4.11), and label versus button ≥ 4.5:1 (WCAG 1.4.3);
+  - the card really is dark in dark mode;
+  - the color-scheme meta tag is present.
+- **The e2e web server now gets placeholder auth and database env vars.** `/coach` renders in tests, and e2e never touches the real database even if `.env.local` exists.
+
+**What else broke on the way**
+
+1. **The first version of the contrast test passed even with the old light-only theme,** because the light theme has enough contrast on its own. → It now also asserts that the theme actually switches.
+2. **`pnpm dev` kept serving the old CSS after `globals.css` changed,** even after a restart: Turbopack's persistent dev cache missed the edit. → Found by reading the served stylesheet in the browser, and fixed by deleting `.next/`. Documented in `CLAUDE.md`.
+
+**Checks:** `pnpm check` (136 unit tests) and `pnpm test:e2e` (95/95) pass.
