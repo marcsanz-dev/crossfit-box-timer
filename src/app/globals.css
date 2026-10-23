@@ -21,13 +21,35 @@
   --color-phone-alert: #ff453a;
 }
 
-/* Coach panel (desktop): light and neutral, for the box "CrossFit Box". */
-@theme {
-  --color-coach-bg: #fafaf9;
-  --color-coach-surface: #ffffff;
-  --color-coach-fg: #1c1917;
-  --color-coach-muted: #57534e;
-  --color-coach-line: #e7e5e4;
+/*
+ * Coach panel (desktop): neutral "CrossFit Box" identity, light and dark.
+ * Declaring a real dark theme (with color-scheme: light dark) also stops
+ * browsers from auto-darkening the light one, which hid the dark buttons.
+ */
+:root {
+  --coach-bg: #fafaf9;
+  --coach-surface: #ffffff;
+  --coach-fg: #1c1917;
+  --coach-muted: #57534e;
+  --coach-line: #e7e5e4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --coach-bg: #0c0a09;
+    --coach-surface: #1c1917;
+    --coach-fg: #fafaf9;
+    --coach-muted: #a8a29e;
+    --coach-line: #44403c;
+  }
+}
+
+@theme inline {
+  --color-coach-bg: var(--coach-bg);
+  --color-coach-surface: var(--coach-surface);
+  --color-coach-fg: var(--coach-fg);
+  --color-coach-muted: var(--coach-muted);
+  --color-coach-line: var(--coach-line);
 }
 
 @theme inline {

@@ -1,8 +1,12 @@
+import type { Viewport } from "next";
 import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Link } from "@/i18n/navigation";
 
-/** Coach area (desktop): light, neutral "CrossFit Box" identity. Refined in Phase 5. */
+// The coach area supports both themes, so browsers must not auto-darken it.
+export const viewport: Viewport = { colorScheme: "light dark" };
+
+/** Coach area (desktop): neutral "CrossFit Box" identity, light or dark. */
 export default function CoachLayout({
   children,
 }: LayoutProps<"/[locale]/coach">) {
