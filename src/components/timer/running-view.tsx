@@ -76,7 +76,14 @@ export function RunningView({ workout, display, status }: RunningViewProps) {
 
       <footer className="flex flex-col items-center gap-[1cqmin] text-center">
         <Details workout={workout} display={display} />
-        <div className="mt-[1cqmin] h-[1.2cqmin] w-full overflow-hidden rounded-full bg-phone-line">
+        <div
+          role="progressbar"
+          aria-label={t("progress")}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(display.progress * 100)}
+          className="mt-[1cqmin] h-[max(4px,1.2cqmin)] w-full shrink-0 overflow-hidden rounded-full bg-phone-line"
+        >
           <div
             className={`h-full rounded-full transition-[width] duration-1000 ease-linear ${barClass[tone]}`}
             style={{ width: `${(display.progress * 100).toFixed(2)}%` }}
