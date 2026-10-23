@@ -78,7 +78,31 @@ for (const slug of ["amrap", "emom", "for-time", "full-hour"]) {
       await expectFullyVisible(page.getByRole("button", { name }));
     }
     await expectNoScroll(page);
+    await expectFullyVisible(page.getByRole("timer"));
     await page.screenshot({ path: test.info().outputPath("controls.png") });
+
+    // Portrait has room for everything: the controls take their own space and
+    // cover neither the details nor the progress bar. (Landscape may float the
+    // controls over the details, so the clock keeps its size.)
+    const viewport = page.viewportSize();
+    if (viewport && viewport.height > viewport.width) {
+      const controlsTop = Math.min(
+        ...(await Promise.all(
+          ["Pausar", "Reiniciar", "Parar"].map(async (name) => {
+            const box = await page.getByRole("button", { name }).boundingBox();
+            return box?.y ?? 0;
+          }),
+        )),
+      );
+      const covered = [page.getByRole("progressbar"), page.getByRole("timer")];
+      const details = page.locator("footer p:visible").last();
+      if ((await details.count()) > 0) covered.push(details);
+      for (const locator of covered) {
+        const box = await locator.boundingBox();
+        expect(box, `${locator} has no box`).not.toBeNull();
+        if (box) expect(box.y + box.height).toBeLessThanOrEqual(controlsTop);
+      }
+    }
 
     // Confirmation dialog fits too.
     await page.getByRole("button", { name: "Parar" }).click();

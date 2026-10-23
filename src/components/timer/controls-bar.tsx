@@ -25,7 +25,7 @@ export function ControlsBar({
   const t = useTranslations("Timer");
 
   return (
-    <div className="flex justify-center gap-[3cqmin] bg-gradient-to-t from-black via-black/90 to-transparent px-[4cqmin] pt-[8cqmin] pb-[3cqmin]">
+    <div className="flex justify-center gap-[3cqmin] px-[4cqmin] pt-[1cqmin] pb-[3cqmin] landscape:bg-gradient-to-t landscape:from-black landscape:via-black/90 landscape:to-transparent landscape:pt-[8cqmin]">
       {status === "running" && (
         <button type="button" onClick={onPause} className={primaryClass}>
           {t("pause")}

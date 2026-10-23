@@ -58,12 +58,14 @@ export function TimerScreen({
 
   return (
     <PhoneFrame>
-      <main className="relative h-full select-none">
-        <RunningView
-          workout={workout}
-          display={runner.display}
-          status={status}
-        />
+      <main className="relative flex h-full flex-col select-none">
+        <div className="min-h-0 flex-1">
+          <RunningView
+            workout={workout}
+            display={runner.display}
+            status={status}
+          />
+        </div>
 
         {/*
         The whole screen is one big toggle: one tap shows the controls, the next
@@ -81,8 +83,14 @@ export function TimerScreen({
           <TransientAlert>{t("wakeLockFailed")}</TransientAlert>
         )}
 
-        {/* Stacked, never overlapping: the sound prompt must not hide the controls. */}
-        <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col">
+        {/*
+          Sound prompt and controls, stacked so neither hides the other.
+          - Portrait: they take their own room below the timer. The clock is
+            width-limited there, so it keeps its size and nothing is covered.
+          - Landscape: height is scarce, so they float over the bottom details;
+            the clock keeps priority over the exercise list.
+        */}
+        <div className="relative z-20 flex flex-col landscape:absolute landscape:inset-x-0 landscape:bottom-0">
           {runner.needsSoundTap && (
             <button
               type="button"
