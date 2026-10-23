@@ -273,3 +273,25 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 - **The first version of the test tried to use CDP on WebKit,** which only Chromium supports. → It now uses the `browserName` fixture.
 
 **Checks:** `pnpm check` (113 unit tests) and `pnpm test:e2e` (85/85, including 20 fit-the-screen runs) pass.
+
+### Phase 3 — controls no longer cover the details in portrait (2026-10-23)
+
+**What I asked**
+
+- Confirmed on the OnePlus 10T that everything now fits.
+- Asked that the Pause / Restart / Stop bar cover nothing when there is room:
+  - **in portrait,** the timer, the exercises and the buttons all fit, but the buttons partly covered the exercises;
+  - **in landscape,** nothing needed to change, because the timer has priority over the exercise list.
+
+**What Claude did**
+
+- **Portrait:** the sound prompt and the controls are now part of the layout, below the progress bar. When they appear the timer area gets shorter, but the clock is width-limited in portrait, so its size doesn't change.
+- **Landscape:** they still float over the bottom details, so the clock keeps its size.
+- **`e2e/fit-screen.spec.ts`:** in portrait, the controls must sit entirely below the timer, the last line of details and the progress bar.
+
+**Checks:** `pnpm check` (113) and `pnpm test:e2e` (85/85) pass.
+
+### Phase 3 — status
+
+- **Done:** repository, Vercel production deploy, the fit-the-screen rule, and two rounds of real-phone fixes on the OnePlus 10T (Android Chrome: fullscreen works, digits are bold).
+- **Moved on at my request:** the rest of `docs/REAL-DEVICE-TESTS.md` (sound at 3 m, the 60-minute run on battery, the iPhone checks) will be run in parallel with Phase 4. Its results will be logged here when they arrive.
