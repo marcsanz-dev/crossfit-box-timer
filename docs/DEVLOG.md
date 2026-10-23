@@ -363,3 +363,67 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 2. **`pnpm dev` kept serving the old CSS after `globals.css` changed,** even after a restart: Turbopack's persistent dev cache missed the edit. → Found by reading the served stylesheet in the browser, and fixed by deleting `.next/`. Documented in `CLAUDE.md`.
 
 **Checks:** `pnpm check` (136 unit tests) and `pnpm test:e2e` (95/95) pass.
+
+---
+
+## Phase 5 — Coach panel + desktop → phone — 2026-10-23 (in progress)
+
+**What I asked**
+
+- Move on to Phase 5: the coach configures the three modes on the desktop and sends the workout to the phone with a QR code and a short code.
+
+**What Claude did**
+
+- **Verified the libraries (npm, 2026-10-23).**
+  - `qrcode` 1.5.4: no release since 2024, but it is the mature reference, renders SVG on the server and has types. `lean-qr` and `uqr` are active but far less used.
+  - `nanoid` 6.0.2, for unbiased, cryptographically random codes.
+- **Pure logic, unit-tested:**
+  - **`src/lib/share/code.ts`:** a 6-character alphabet without look-alikes (no 0/O, 1/I/L), normalising what people type (case, spaces, dashes), validation, and display as "K7Q M4P". Shares expire after 7 days.
+  - **`src/lib/coach/workout-form.ts`:**
+    - the form state (durations in minutes + seconds, EMOM station rows);
+    - conversion to the workout input;
+    - validation with the **same Zod schema** as the server and the phone, mapped to form fields and translated messages.
+  - **`getStoredShareCode`** in `session.ts`, for the phone's "continue the last workout" link.
+- **Database:**
+  - a `share` table holding the code, a workout snapshot (jsonb, re-validated with Zod on every read), the author and the expiry;
+  - migration `0001_shares`, applied to both Neon branches;
+  - `src/db/shares.ts` creates a share (retrying on the unlikely code collision) and reads a non-expired one.
+- **Coach panel (`/coach`, signed in):**
+  - mode cards for For Time, AMRAP and EMOM;
+  - per-mode fields with inline, accessible errors;
+  - optional name, exercises and prep countdown;
+  - a **live preview that renders the real phone `RunningView`** in a phone-shaped frame.
+  - **"Send to phone"** calls a Server Action, which re-checks the session and the workout on the server.
+- **Share page (`/coach/share/[code]`):**
+  - the QR code (always black on white, so it scans in dark mode), pointing to `/t/CODE` in the coach's language;
+  - the big short code;
+  - the agreed per-phone guidance (iPhone: install, then type the code; Android: scan the QR);
+  - the 7-day expiry note.
+- **Phone:**
+  - **`/t`:** the code entry screen and start page of the installed app. It normalises the code, rejects malformed ones, and links to the last workout and the demos.
+  - **`/t/[code]`:** downloads the snapshot once, with no login, then runs the timer offline.
+  - Malformed codes never reach the database.
+  - Unknown or expired codes show "Code not found". **A database or network failure shows "Couldn't load" with a retry, never a blank screen.**
+- **Tests:**
+  - 170 unit tests;
+  - 120 e2e tests: the code entry, a malformed code, an outage, **the timer running with the network off after loading**, and the fit-the-screen rule for `/t`.
+  - Manually: a test share inserted into the dev branch opened correctly from `/t`, typed as "8cb jnv" and also as `/t/8cb-jnv`.
+
+**What broke and what we changed**
+
+1. **Mapping Zod issues to fields:** an over-long exercise and "too many exercises" share the code `too_big`. → They are told apart by the issue path (`stations.3` versus `stations`). Caught by a unit test.
+2. **React 19's lint rule forbids reading refs during render** (used to keep the last valid preview). → The last valid workout now lives in state, updated in the change handler.
+3. **Typed next-intl messages** rejected a generic params object for a union of keys, and the share page's `locale` param is a plain string. → One explicit call per error code, and `hasLocale` to narrow the locale.
+4. **The build failed: `usePathname()` outside `<Suspense>` on the dynamic share route.** → The coach header's language switcher is wrapped in `<Suspense>`.
+5. **Cache Components flagged `new Date()` (the expiry check) during prerendering.** → `await io()` from `next/cache`, which the Next 16.4 docs recommend over `connection()`, before the lookup.
+6. **Dangerous env trap:** with a production build, a valid code showed "not found". Next.js loads `.env.production.local` **automatically in production mode**, so a local `next start` was reading the **production** database.
+   - → Renamed it to `.env.migrate.production`, which only `pnpm db:migrate:prod` reads.
+   - Documented in `CLAUDE.md`.
+7. **WebKit hydration race, again:** text typed in `/t` before React took over was wiped. → The code input and its button are disabled until hydration, like the Start button.
+8. **A fit-screen test timed out on `/t`:** the file-wide paused fake clock stopped React from streaming the page in. → That test resumes the clock.
+
+**Pending for Phase 5**
+
+- **My end-to-end check with a real sign-in:** build each mode on the desktop, send it, open it on the phone via QR **and** via code, with Wi-Fi off after loading.
+- **Visual review of `/coach` and `/coach/share/[code]`.** They need a session, so Claude could not screenshot them.
+- **Deploy:** push `dev`, verify the Preview, then fast-forward `main`.

@@ -59,11 +59,11 @@ The timer pages build and run without any secrets. The coach area needs these:
 pnpm db:migrate
 ```
 
-| Script                                     | What it does                                                               |
-| ------------------------------------------ | -------------------------------------------------------------------------- |
-| `pnpm db:generate`                         | Create a SQL migration from the Drizzle schema                             |
-| `pnpm db:migrate` / `pnpm db:migrate:prod` | Apply migrations to the database in `.env.local` / `.env.production.local` |
-| `pnpm auth:generate`                       | Regenerate the Better Auth tables in `src/db/schema/auth.ts`               |
+| Script                                     | What it does                                                                 |
+| ------------------------------------------ | ---------------------------------------------------------------------------- |
+| `pnpm db:generate`                         | Create a SQL migration from the Drizzle schema                               |
+| `pnpm db:migrate` / `pnpm db:migrate:prod` | Apply migrations to the database in `.env.local` / `.env.migrate.production` |
+| `pnpm auth:generate`                       | Regenerate the Better Auth tables in `src/db/schema/auth.ts`                 |
 
 ## Assumptions & decisions
 
