@@ -5,19 +5,17 @@ import { Link } from "@/i18n/navigation";
 import { formatCode } from "@/lib/share/code";
 import type { Workout } from "@/lib/timer/schema";
 
-/** What the coach sees after sending: QR, code and direct link, each easy to pass on. */
+/** What the coach sees after sending: one link, opened here or passed to another device. */
 export function ShareView({
   code,
   workout,
   qrSvg,
   timerUrl,
-  homeUrl,
 }: {
   code: string;
   workout: Workout;
   qrSvg: string;
   timerUrl: string;
-  homeUrl: string;
 }) {
   const t = useTranslations("Share");
   const modeLabel = useModeLabel(workout);
@@ -31,64 +29,62 @@ export function ShareView({
         <h1 className="text-3xl font-black">{workout.name ?? t("title")}</h1>
       </header>
 
-      <div className="grid items-center gap-8 md:grid-cols-[auto_minmax(0,1fr)]">
-        {/* Always black on white, so phones scan it even in dark mode. */}
-        <div
-          role="img"
-          aria-label={t("scanAlt")}
-          className="mx-auto w-64 rounded-2xl bg-white p-3 shadow-sm md:w-72 [&_svg]:h-auto [&_svg]:w-full"
-          dangerouslySetInnerHTML={{ __html: qrSvg }}
-        />
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <p className="text-sm font-semibold text-coach-muted">
-              {t("codeLabel")}
-            </p>
-            <p className="font-mono text-6xl font-black tracking-[0.15em] tabular-nums md:text-7xl">
-              {formatCode(code)}
-            </p>
-            <CopyButton value={formatCode(code)} label={t("copyCode")} />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-sm font-semibold text-coach-muted">
-              {t("linkLabel")}
-            </p>
-            {/* A new tab keeps the QR on screen for the phone. */}
-            <a
-              href={timerUrl}
-              target="_blank"
-              rel="noopener"
-              className="font-semibold break-all underline underline-offset-4"
-            >
-              {withoutProtocol(timerUrl)}
-            </a>
-            <CopyButton value={timerUrl} label={t("copyLink")} />
-          </div>
-          <p className="text-coach-muted">
-            {t.rich("orType", {
-              url: withoutProtocol(homeUrl),
-              link: (chunks) => (
-                <a
-                  href={homeUrl}
-                  target="_blank"
-                  rel="noopener"
-                  className="font-semibold break-all text-coach-fg underline underline-offset-4"
-                >
-                  {chunks}
-                </a>
-              ),
-            })}
-          </p>
-          <p className="text-sm text-coach-muted">{t("expires")}</p>
-        </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-semibold text-coach-muted">
+          {t("linkLabel")}
+        </p>
+        <a
+          href={timerUrl}
+          className="text-2xl font-bold break-all underline underline-offset-4 md:text-3xl"
+        >
+          {withoutProtocol(timerUrl)}
+        </a>
+        <p className="text-sm text-coach-muted">{t("expires")}</p>
       </div>
 
-      <div className="rounded-2xl border border-coach-line bg-coach-surface p-6">
+      <div className="grid gap-4 md:grid-cols-2">
+        <section className="flex flex-col gap-4 rounded-2xl border border-coach-line bg-coach-surface p-6">
+          <h2 className="text-2xl font-black">{t("thisDevice")}</h2>
+          <p className="text-lg text-coach-muted">{t("thisDeviceHow")}</p>
+          <a
+            href={timerUrl}
+            className="inline-flex min-h-14 items-center justify-center self-start rounded-xl bg-coach-fg px-6 text-lg font-bold text-coach-bg hover:opacity-90"
+          >
+            {t("openHere")}
+          </a>
+        </section>
+
+        <section className="flex flex-col gap-4 rounded-2xl border border-coach-line bg-coach-surface p-6">
+          <h2 className="text-2xl font-black">{t("otherDevice")}</h2>
+          <p className="text-lg text-coach-muted">{t("otherDeviceHow")}</p>
+          <CopyButton value={timerUrl} label={t("copyLink")} />
+          <p className="text-lg text-coach-muted">{t("orScan")}</p>
+          {/* Always black on white, so phones scan it even in dark mode. */}
+          <div
+            role="img"
+            aria-label={t("scanAlt")}
+            className="w-56 rounded-2xl bg-white p-3 shadow-sm [&_svg]:h-auto [&_svg]:w-full"
+            dangerouslySetInnerHTML={{ __html: qrSvg }}
+          />
+        </section>
+      </div>
+
+      <div className="rounded-2xl border border-coach-line p-6">
         <h2 className="text-lg font-bold">{t("howTitle")}</h2>
         <dl className="mt-3 grid gap-4 sm:grid-cols-2">
           <div>
             <dt className="font-semibold">{t("iphone")}</dt>
-            <dd className="text-coach-muted">{t("iphoneHow")}</dd>
+            <dd className="text-coach-muted">
+              {/* The installed app opens on the code screen, so iPhones still need the code. */}
+              {t.rich("iphoneHow", {
+                code: formatCode(code),
+                strong: (chunks) => (
+                  <strong className="font-mono font-black whitespace-nowrap text-coach-fg">
+                    {chunks}
+                  </strong>
+                ),
+              })}
+            </dd>
           </div>
           <div>
             <dt className="font-semibold">{t("android")}</dt>
@@ -100,7 +96,7 @@ export function ShareView({
       <div className="flex flex-wrap gap-3">
         <Link
           href="/coach"
-          className="inline-flex min-h-12 items-center rounded-xl bg-coach-fg px-5 font-semibold text-coach-bg hover:opacity-90"
+          className="inline-flex min-h-12 items-center rounded-xl border border-coach-line px-5 font-semibold hover:bg-coach-surface"
         >
           {t("newWorkout")}
         </Link>

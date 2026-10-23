@@ -54,7 +54,6 @@ async function ShareContent({
     getPathname({ href: `/t/${code}`, locale }),
     base,
   ).toString();
-  const homeUrl = new URL(getPathname({ href: "/t", locale }), base);
   const qrSvg = await QRCode.toString(timerUrl, {
     type: "svg",
     margin: 2,
@@ -68,7 +67,6 @@ async function ShareContent({
       workout={workout}
       qrSvg={qrSvg}
       timerUrl={timerUrl}
-      homeUrl={homeUrl.toString()}
     />
   );
 }

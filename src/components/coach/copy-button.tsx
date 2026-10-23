@@ -41,11 +41,11 @@ export function CopyButton({ value, label }: { value: string; label: string }) {
         type="button"
         onClick={copy}
         disabled={!hydrated}
-        className="inline-flex min-h-11 items-center rounded-xl border border-coach-line bg-coach-surface px-4 font-semibold hover:bg-coach-bg disabled:opacity-60"
+        className="inline-flex min-h-14 items-center justify-center rounded-xl border-2 border-coach-fg px-6 text-lg font-bold hover:bg-coach-bg disabled:opacity-60"
       >
         {label}
       </button>
-      <span role="status" className="text-sm font-semibold text-coach-muted">
+      <span role="status" className="font-semibold text-coach-muted">
         {status === "copied" && t("copied")}
         {status === "failed" && t("copyFailed")}
       </span>
