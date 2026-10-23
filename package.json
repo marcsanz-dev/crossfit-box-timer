@@ -19,7 +19,7 @@
     "auth:generate": "pnpm dlx auth@1.7.12 generate --config auth.cli.ts --output src/db/schema/auth.ts --yes",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:migrate:prod": "cross-env DB_ENV_FILE=.env.production.local drizzle-kit migrate",
+    "db:migrate:prod": "cross-env DB_ENV_FILE=.env.migrate.production drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
@@ -27,8 +27,10 @@
     "@neondatabase/serverless": "^1.2.0",
     "better-auth": "^1.7.12",
     "drizzle-orm": "^0.45.4",
+    "nanoid": "^6.0.2",
     "next": "16.4.2",
     "next-intl": "^4.14.9",
+    "qrcode": "^1.5.4",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "zod": "^4.6.7"
@@ -37,6 +39,7 @@
     "@playwright/test": "^1.64.1",
     "@tailwindcss/turbopack": "^4.3.3",
     "@types/node": "^24.19.2",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "^5.0.5",
