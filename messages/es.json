@@ -5,7 +5,9 @@
   },
   "Home": {
     "title": "Temporizador de CrossFit Box",
-    "tagline": "Configura el entreno en el ordenador. El móvil del rig hace el resto."
+    "tagline": "Configura el entreno en el ordenador. El móvil del rig hace el resto.",
+    "coachLink": "Soy coach: configurar entrenos",
+    "demoLink": "Probar el temporizador en el móvil"
   },
   "LocaleSwitcher": {
     "label": "Idioma",
@@ -57,5 +59,22 @@
     "installIos": "En iPhone, para verlo a pantalla completa: Compartir → Añadir a pantalla de inicio, y ábrelo desde el icono.",
     "wakeLockUnsupported": "Este navegador no puede mantener la pantalla encendida: desactiva el bloqueo automático en los ajustes del móvil.",
     "wakeLockFailed": "No se ha podido mantener la pantalla encendida. Desactiva el ahorro de batería o el bloqueo automático."
+  },
+  "Coach": {
+    "brand": "CrossFit Box",
+    "area": "Coaches",
+    "signInTitle": "Acceso para coaches",
+    "signInBody": "Entra con tu cuenta de Google de CrossFit Box (@yaqbot.com) para configurar los entrenos.",
+    "signInButton": "Entrar con Google",
+    "signingIn": "Abriendo Google…",
+    "welcome": "Hola, {name}",
+    "comingSoon": "Aquí vas a configurar los entrenos y enviarlos al móvil del rig.",
+    "signOut": "Cerrar sesión",
+    "deniedTitle": "Solo para coaches",
+    "deniedNotACoach": "Esta cuenta no pertenece a CrossFit Box. Entra con tu cuenta @yaqbot.com.",
+    "deniedEmailNotVerified": "Google no ha verificado el email de esta cuenta.",
+    "deniedGeneric": "No se ha podido iniciar sesión. Vuelve a intentarlo.",
+    "tryAnother": "Probar con otra cuenta",
+    "backHome": "Volver al inicio"
   }
 }

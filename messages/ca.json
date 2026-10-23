@@ -5,7 +5,9 @@
   },
   "Home": {
     "title": "Temporitzador de CrossFit Box",
-    "tagline": "Configura l'entrenament a l'ordinador. El mòbil del rig fa la resta."
+    "tagline": "Configura l'entrenament a l'ordinador. El mòbil del rig fa la resta.",
+    "coachLink": "Soc coach: configurar entrenaments",
+    "demoLink": "Provar el temporitzador al mòbil"
   },
   "LocaleSwitcher": {
     "label": "Idioma",
@@ -57,5 +59,22 @@
     "installIos": "A l'iPhone, per veure'l a pantalla completa: Compartir → Afegir a la pantalla d'inici, i obre'l des de la icona.",
     "wakeLockUnsupported": "Aquest navegador no pot mantenir la pantalla encesa: desactiva el bloqueig automàtic als ajustos del mòbil.",
     "wakeLockFailed": "No s'ha pogut mantenir la pantalla encesa. Desactiva l'estalvi de bateria o el bloqueig automàtic."
+  },
+  "Coach": {
+    "brand": "CrossFit Box",
+    "area": "Coaches",
+    "signInTitle": "Accés per a coaches",
+    "signInBody": "Entra amb el teu compte de Google de CrossFit Box (@yaqbot.com) per configurar els entrenaments.",
+    "signInButton": "Entrar amb Google",
+    "signingIn": "Obrint Google…",
+    "welcome": "Hola, {name}",
+    "comingSoon": "Aquí configuraràs els entrenaments i els enviaràs al mòbil del rig.",
+    "signOut": "Tancar la sessió",
+    "deniedTitle": "Només per a coaches",
+    "deniedNotACoach": "Aquest compte no pertany a CrossFit Box. Entra amb el teu compte @yaqbot.com.",
+    "deniedEmailNotVerified": "Google no ha verificat el correu d'aquest compte.",
+    "deniedGeneric": "No s'ha pogut iniciar la sessió. Torna-ho a provar.",
+    "tryAnother": "Provar amb un altre compte",
+    "backHome": "Tornar a l'inici"
   }
 }

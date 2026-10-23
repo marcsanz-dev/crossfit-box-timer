@@ -5,7 +5,9 @@
   },
   "Home": {
     "title": "CrossFit Box Timer",
-    "tagline": "Set up the workout on the computer. The phone on the rig does the rest."
+    "tagline": "Set up the workout on the computer. The phone on the rig does the rest.",
+    "coachLink": "I'm a coach: set up workouts",
+    "demoLink": "Try the timer on your phone"
   },
   "LocaleSwitcher": {
     "label": "Language",
@@ -57,5 +59,22 @@
     "installIos": "On iPhone, for full screen: Share → Add to Home Screen, then open it from the icon.",
     "wakeLockUnsupported": "This browser can't keep the screen on: turn off auto-lock in the phone settings.",
     "wakeLockFailed": "Couldn't keep the screen on. Turn off battery saver or auto-lock."
+  },
+  "Coach": {
+    "brand": "CrossFit Box",
+    "area": "Coaches",
+    "signInTitle": "Coach sign-in",
+    "signInBody": "Sign in with your CrossFit Box Google account (@yaqbot.com) to set up workouts.",
+    "signInButton": "Sign in with Google",
+    "signingIn": "Opening Google…",
+    "welcome": "Hi, {name}",
+    "comingSoon": "This is where you will set up workouts and send them to the phone on the rig.",
+    "signOut": "Sign out",
+    "deniedTitle": "Coaches only",
+    "deniedNotACoach": "This account doesn't belong to CrossFit Box. Sign in with your @yaqbot.com account.",
+    "deniedEmailNotVerified": "Google hasn't verified this account's email.",
+    "deniedGeneric": "Sign-in failed. Please try again.",
+    "tryAnother": "Try another account",
+    "backHome": "Back to home"
   }
 }

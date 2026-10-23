@@ -21,6 +21,15 @@
   --color-phone-alert: #ff453a;
 }
 
+/* Coach panel (desktop): light and neutral, for the box "CrossFit Box". */
+@theme {
+  --color-coach-bg: #fafaf9;
+  --color-coach-surface: #ffffff;
+  --color-coach-fg: #1c1917;
+  --color-coach-muted: #57534e;
+  --color-coach-line: #e7e5e4;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
