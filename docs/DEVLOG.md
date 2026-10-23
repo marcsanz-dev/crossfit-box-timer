@@ -457,3 +457,25 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
   - The copied values are `8CB JNV` and the full URL.
   - The denied-clipboard message shows.
 - **Checks:** `pnpm check` passes.
+
+### Phase 5 — share page built around one link (2026-10-23)
+
+**What I asked**
+
+- With the full link copyable, the separate code and the "open …/t and type the code" line are redundant. Remove them.
+- Make it clearer and bigger: open the link on this device, or copy it for another device.
+
+**What Claude changed**
+
+- The page now has one big, clickable **workout link**, with two cards:
+  - **"On this device"** — an "Open the timer" button;
+  - **"On another device"** — a "Copy link" button, plus the QR to scan with the camera.
+- **The code stays in one place only: the iPhone tip.** The installed Home Screen app opens on the code screen (a link from WhatsApp opens in Safari, not in the app), so an iPhone still needs the code to get full screen.
+- Android's tip now says "open the link or scan the QR".
+- I had already turned off Vercel Authentication on the project, so phones open the Preview without a Vercel account.
+
+**How it was checked**
+
+- Browser pane, through a temporary page with sample data (deleted): desktop light and dark, and a 375 px phone width with no horizontal scroll.
+- The copied value is the full URL.
+- **Checks:** `pnpm check` and `pnpm test:e2e` pass.
