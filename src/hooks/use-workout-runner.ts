@@ -19,12 +19,12 @@ import {
   isSessionStale,
   parseSession,
   serializeSession,
+  SESSION_STORAGE_KEY,
 } from "@/lib/timer/session";
 import { buildTimeline } from "@/lib/timer/timeline";
 
 export type RunnerStatus = "ready" | "running" | "paused" | "finished";
 
-const STORAGE_KEY = "crossfit-box.timer.session";
 const SCHEDULER_INTERVAL_MS = 200;
 const LOOKAHEAD_MS = 1500;
 const LATE_TOLERANCE_MS = 300;
@@ -69,11 +69,11 @@ export function useWorkoutRunner(workout: Workout, sessionKey: string) {
       try {
         if (next) {
           localStorage.setItem(
-            STORAGE_KEY,
+            SESSION_STORAGE_KEY,
             serializeSession(sessionKey, workout, next),
           );
         } else {
-          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(SESSION_STORAGE_KEY);
         }
       } catch {
         // Private mode or storage disabled: the timer still works, without resume.
@@ -86,7 +86,10 @@ export function useWorkoutRunner(workout: Workout, sessionKey: string) {
   useEffect(() => {
     let stored = null;
     try {
-      stored = parseSession(localStorage.getItem(STORAGE_KEY), sessionKey);
+      stored = parseSession(
+        localStorage.getItem(SESSION_STORAGE_KEY),
+        sessionKey,
+      );
     } catch {
       return;
     }

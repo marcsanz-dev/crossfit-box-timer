@@ -3,6 +3,9 @@ import { getElapsedMs, type RunState } from "./clock";
 import { workoutSchema, type Workout } from "./schema";
 import type { Timeline } from "./timeline";
 
+/** localStorage key of the one run a phone keeps. */
+export const SESSION_STORAGE_KEY = "crossfit-box.timer.session";
+
 /** A finished or abandoned run is forgotten this long after the workout ends. */
 export const SESSION_STALE_AFTER_MS = 30 * 60 * 1000;
 
@@ -47,6 +50,22 @@ export function parseSession(
   }
   const result = storedSessionSchema.safeParse(json);
   return result.success && result.data.key === key ? result.data : null;
+}
+
+/**
+ * The share code of the stored run, so the phone home can offer "continue the
+ * last workout". Demo runs and invalid data yield null.
+ */
+export function getStoredShareCode(raw: string | null): string | null {
+  if (!raw) return null;
+  try {
+    const result = storedSessionSchema.safeParse(JSON.parse(raw));
+    if (!result.success) return null;
+    const match = /^share:([A-Z0-9]+)$/.exec(result.data.key);
+    return match?.[1] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export function isSessionStale(

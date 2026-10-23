@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { startRun } from "./clock";
 import { workoutSchema } from "./schema";
 import {
+  getStoredShareCode,
   isSessionStale,
   parseSession,
   serializeSession,
@@ -44,6 +45,22 @@ describe("session persistence", () => {
     ],
   ])("returns null for %s", (_label, raw) => {
     expect(parseSession(raw, "k")).toBeNull();
+  });
+});
+
+describe("getStoredShareCode", () => {
+  it("returns the code of a stored shared workout", () => {
+    const raw = serializeSession("share:K7QM4P", workout, startRun(T0));
+    expect(getStoredShareCode(raw)).toBe("K7QM4P");
+  });
+
+  it.each([
+    ["a demo run", serializeSession("demo:amrap", workout, startRun(T0))],
+    ["nothing stored", null],
+    ["invalid JSON", "{nope"],
+    ["an invalid session", JSON.stringify({ version: 1, key: "share:K7QM4P" })],
+  ])("returns null for %s", (_label, raw) => {
+    expect(getStoredShareCode(raw)).toBeNull();
   });
 });
 
