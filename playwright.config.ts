@@ -29,5 +29,16 @@ export default defineConfig({
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    // Hermetic placeholders: they override any developer .env.local, so e2e runs
+    // never touch a real database or Google client. Pages without a session
+    // cookie never query the database.
+    env: {
+      DATABASE_URL: "postgresql://e2e:e2e@127.0.0.1:5432/e2e",
+      BETTER_AUTH_SECRET: "e2e-only-secret-not-used-anywhere-else-000",
+      BETTER_AUTH_URL: baseURL,
+      GOOGLE_CLIENT_ID: "e2e-client-id",
+      GOOGLE_CLIENT_SECRET: "e2e-client-secret",
+      AUTH_EXTRA_EMAILS: "",
+    },
   },
 });
