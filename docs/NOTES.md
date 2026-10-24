@@ -1,6 +1,6 @@
 # Delivery notes
 
-_Draft. A half-page summary of [`DEVLOG.md`](DEVLOG.md)._
+_A half-page summary of [`DEVLOG.md`](DEVLOG.md). The full conversation with Claude is in [`ai-conversation-log.md`](ai-conversation-log.md)._
 
 ## What I asked the AI
 

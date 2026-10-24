@@ -160,5 +160,6 @@ I directed the work and made the product calls. Claude Code wrote the code, the 
 - [`docs/PLAN.md`](docs/PLAN.md): the agreed plan (scope, architecture, risks, phases, status).
 - [`docs/DEVLOG.md`](docs/DEVLOG.md): the phase-by-phase log.
 - [`docs/NOTES.md`](docs/NOTES.md): the half-page delivery notes.
+- [`docs/ai-conversation-log.md`](docs/ai-conversation-log.md): the full Claude Code conversation, exported (in Spanish, my native language).
 - [`docs/REAL-DEVICE-TESTS.md`](docs/REAL-DEVICE-TESTS.md): the real-phone checklist.
 - [`CLAUDE.md`](CLAUDE.md): the working guide for Claude Code (stack, commands, conventions, gotchas).

@@ -4,3 +4,6 @@ coverage/
 playwright-report/
 test-results/
 next-env.d.ts
+
+# Generated from the Claude Code session export, kept verbatim
+docs/ai-conversation-log.md
