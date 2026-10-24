@@ -126,8 +126,6 @@
   },
   "Share": {
     "title": "Ready for the phone",
-    "linkLabel": "Workout link",
-    "expires": "The link expires in 7 days.",
     "thisDevice": "On this device",
     "thisDeviceHow": "Open the link right here.",
     "openHere": "Open the timer",
@@ -140,7 +138,7 @@
     "scanAlt": "QR code that opens the workout on the phone",
     "howTitle": "What we recommend for each phone",
     "iphone": "iPhone",
-    "iphoneHow": "Install it once (Share → Add to Home Screen), open the app from the icon and type the code <strong>{code}</strong>. That's the only way to get full screen.",
+    "iphoneHow": "Open the link in Safari, tap Share → Add to Home Screen and open it from the icon: that's the only way to get full screen. If the app is already installed, open it and type the code <strong>{code}</strong>.",
     "android": "Android",
     "androidHow": "Open the link or scan the QR. Chrome goes full screen when you tap Start.",
     "newWorkout": "Set up another workout",

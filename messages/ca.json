@@ -126,8 +126,6 @@
   },
   "Share": {
     "title": "A punt per al mòbil",
-    "linkLabel": "Enllaç de l'entrenament",
-    "expires": "L'enllaç caduca en 7 dies.",
     "thisDevice": "En aquest dispositiu",
     "thisDeviceHow": "Obre l'enllaç aquí mateix.",
     "openHere": "Obrir el temporitzador",
@@ -140,7 +138,7 @@
     "scanAlt": "Codi QR que obre l'entrenament al mòbil",
     "howTitle": "Què recomanem segons el mòbil",
     "iphone": "iPhone",
-    "iphoneHow": "Instal·la'l un cop (Compartir → Afegir a la pantalla d'inici), obre l'app des de la icona i escriu el codi <strong>{code}</strong>. Només així es veu a pantalla completa.",
+    "iphoneHow": "Obre l'enllaç a Safari, toca Compartir → Afegir a la pantalla d'inici i obre'l des de la icona: només així es veu a pantalla completa. Si ja tens l'app instal·lada, obre-la i escriu el codi <strong>{code}</strong>.",
     "android": "Android",
     "androidHow": "Obre l'enllaç o escaneja el QR. Chrome es posa a pantalla completa en prémer Començar.",
     "newWorkout": "Configurar un altre entrenament",

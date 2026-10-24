@@ -126,8 +126,6 @@
   },
   "Share": {
     "title": "Listo para el móvil",
-    "linkLabel": "Enlace del entreno",
-    "expires": "El enlace caduca en 7 días.",
     "thisDevice": "En este dispositivo",
     "thisDeviceHow": "Abre el enlace aquí mismo.",
     "openHere": "Abrir el temporizador",
@@ -140,7 +138,7 @@
     "scanAlt": "Código QR que abre el entreno en el móvil",
     "howTitle": "Qué recomendamos según el móvil",
     "iphone": "iPhone",
-    "iphoneHow": "Instálalo una vez (Compartir → Añadir a pantalla de inicio), abre la app desde el icono y escribe el código <strong>{code}</strong>. Solo así se ve a pantalla completa.",
+    "iphoneHow": "Abre el enlace en Safari, toca Compartir → Añadir a pantalla de inicio y ábrelo desde el icono: solo así se ve a pantalla completa. Si ya tienes la app instalada, ábrela y escribe el código <strong>{code}</strong>.",
     "android": "Android",
     "androidHow": "Abre el enlace o escanea el QR. Chrome se pone a pantalla completa al pulsar Empezar.",
     "newWorkout": "Configurar otro entreno",
