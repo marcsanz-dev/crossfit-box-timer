@@ -9,10 +9,20 @@
     "description": "Full-screen timer with beeps for the phone on the rig."
   },
   "Home": {
+    "brand": "CrossFit Box",
     "title": "CrossFit Box Timer",
-    "tagline": "Set up the workout on the computer. The phone on the rig does the rest.",
-    "coachLink": "I'm a coach: set up workouts",
-    "demoLink": "Try the timer on your phone"
+    "tagline": "The coach sets up the workout on the computer. The phone on the rig counts it out with beeps, full screen, for the whole class.",
+    "coachTitle": "I'm a coach",
+    "coachBody": "Set up a For Time, an AMRAP or an EMOM, save it to reuse it, and send it to the phone. Sign in with your @yaqbot.com account.",
+    "coachLink": "Go to the panel",
+    "phoneTitle": "Phone on the rig",
+    "phoneBody": "Open the link the coach sent, scan their QR or type the code. No sign-in needed.",
+    "phoneLink": "Open the timer",
+    "demoLink": "Try a demo workout",
+    "howTitle": "How it works",
+    "step1": "The coach sets up the workout on the computer.",
+    "step2": "They send it to the phone with a link, a QR or a code.",
+    "step3": "One tap on Start and the phone counts the whole class, even offline."
   },
   "LocaleSwitcher": {
     "label": "Language",
@@ -73,7 +83,6 @@
     "signInButton": "Sign in with Google",
     "signingIn": "Opening Google…",
     "welcome": "Hi, {name}",
-    "comingSoon": "This is where you will set up workouts and send them to the phone on the rig.",
     "signOut": "Sign out",
     "deniedTitle": "Coaches only",
     "deniedNotACoach": "This account doesn't belong to CrossFit Box. Sign in with your @yaqbot.com account.",

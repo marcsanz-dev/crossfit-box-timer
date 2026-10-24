@@ -9,10 +9,20 @@
     "description": "Temporitzador a pantalla completa, amb xiulets, per al mòbil del rig."
   },
   "Home": {
+    "brand": "CrossFit Box",
     "title": "Temporitzador de CrossFit Box",
-    "tagline": "Configura l'entrenament a l'ordinador. El mòbil del rig fa la resta.",
-    "coachLink": "Soc coach: configurar entrenaments",
-    "demoLink": "Provar el temporitzador al mòbil"
+    "tagline": "El coach prepara l'entrenament a l'ordinador. El mòbil del rig el compta amb xiulets, a pantalla completa, tota la classe.",
+    "coachTitle": "Soc coach",
+    "coachBody": "Configura un For Time, un AMRAP o un EMOM, desa'l per reutilitzar-lo i envia'l al mòbil. Entra amb el teu compte @yaqbot.com.",
+    "coachLink": "Entrar al tauler",
+    "phoneTitle": "Mòbil del rig",
+    "phoneBody": "Obre l'enllaç que t'ha passat el coach, escaneja el seu QR o escriu el codi. No cal iniciar sessió.",
+    "phoneLink": "Obrir el temporitzador",
+    "demoLink": "Provar un entrenament de demo",
+    "howTitle": "Com funciona",
+    "step1": "El coach configura l'entrenament a l'ordinador.",
+    "step2": "L'envia al mòbil amb un enllaç, un QR o un codi.",
+    "step3": "Un toc a «Començar» i el mòbil compta tota la classe, fins i tot sense connexió."
   },
   "LocaleSwitcher": {
     "label": "Idioma",
@@ -73,7 +83,6 @@
     "signInButton": "Entrar amb Google",
     "signingIn": "Obrint Google…",
     "welcome": "Hola, {name}",
-    "comingSoon": "Aquí configuraràs els entrenaments i els enviaràs al mòbil del rig.",
     "signOut": "Tancar la sessió",
     "deniedTitle": "Només per a coaches",
     "deniedNotACoach": "Aquest compte no pertany a CrossFit Box. Entra amb el teu compte @yaqbot.com.",
