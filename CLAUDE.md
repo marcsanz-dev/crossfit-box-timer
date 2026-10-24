@@ -73,6 +73,7 @@ pnpm db:generate    # SQL migration from the Drizzle schema (drizzle/)
 pnpm db:migrate     # apply migrations to the Neon dev branch (.env.local)
 pnpm db:migrate:prod # apply migrations to Neon production (.env.migrate.production)
 pnpm auth:generate  # regenerate src/db/schema/auth.ts with the Better Auth CLI
+pnpm icons          # regenerate app icons (src/app/icon.svg, apple-icon.png, public/icons) from scripts/generate-icons.mjs
 ```
 
 Run `pnpm check` before every commit and `pnpm test:e2e` before closing a phase.
@@ -97,12 +98,16 @@ src/
   app/[locale]/t/          # phone routes in PhoneFrame: /t (code entry), /t/[code] (shared workout), /t/demo/[slug]
   lib/auth/coach-access.ts # pure coach access rule (hd=yaqbot.com; dev allowlist outside production)
   lib/share/code.ts        # short codes: unambiguous alphabet, normalise, validate, format; 7-day TTL
-  lib/coach/workout-form.ts # coach form state → workout input; validation mapped to fields/messages
+  lib/coach/workout-form.ts # coach form state ↔ workout; validation mapped to fields/messages
+  lib/coach/preset.ts      # preset save input (name required), per-coach limit
+  lib/pwa/manifest.ts      # per-page web app manifest: start URL validation, manifest builder
   auth/                    # Better Auth wiring: server.ts (lazy getAuth) and client.ts
-  db/                      # Drizzle client (lazy getDb), schema/ (auth + share), shares.ts (create/read snapshots)
+  db/                      # Drizzle client (lazy getDb), schema/ (auth, share, preset), shares.ts (snapshots), presets.ts (CRUD + Box library)
   env.ts                   # Zod-validated server env, read lazily (builds need no secrets)
-  components/coach/        # coach UI: auth buttons, workout builder, form controls, phone preview, share view (one link: open here or copy it; QR)
-  app/[locale]/coach/      # coach area: builder (/coach), actions.ts (createShareAction), share/[code] (QR + code), denied
+  components/coach/        # coach UI: workspace (presets panel + builder sharing useWorkoutForm), form controls, phone preview, share view, auth buttons
+  app/[locale]/coach/      # coach area: /coach, actions.ts (createShareAction), preset-actions.ts (save/duplicate/delete), share/[code], denied
+  app/app.webmanifest/     # manifest route: ?start=<phone page> (linked by app/[locale]/t/phone-metadata.ts)
+public/sw.js               # service worker: phone pages network-first with offline fallback, /_next/static cache-first
   app/api/auth/[...all]/   # Better Auth route handler
   proxy.ts                 # next-intl locale middleware
   global.ts                # next-intl type augmentation
@@ -110,7 +115,7 @@ drizzle/                   # SQL migrations (committed)
 auth.cli.ts                # entry point for the Better Auth CLI only
 ```
 
-Current status per phase: `docs/PLAN.md` §8 "Status". Next up: finish Phase 5 acceptance, then Phase 6 (presets, Box library, installable web app, offline reload).
+Current status per phase: `docs/PLAN.md` §8 "Status". Next up: Phase 6 acceptance on real devices, then Phase 7 (polish, translations, landing, Lighthouse).
 
 ## Environments and branches
 
@@ -154,4 +159,7 @@ Current status per phase: `docs/PLAN.md` §8 "Status". Next up: finish Phase 5 a
 - **Stale CSS in `pnpm dev`:** Turbopack's persistent dev cache sometimes misses an edit to `globals.css`. If the served CSS doesn't match the file, stop the server, delete `.next/` and start it again.
 - **Coach theme:** light and dark tokens (`--coach-*`), with `colorScheme: "light dark"` declared, so browsers never auto-darken it. `e2e/coach-theme.spec.ts` checks the contrast in both modes.
 - **Previewing locally:** `.claude/launch.json` (git-ignored) defines `prod` (port 3200) and `dev` (port 3000) for the browser pane. Stop the server before `pnpm build`.
+- **Service worker (`public/sw.js`)** registers only in production builds, from phone pages. It never stores a page containing `data-no-offline-cache` (the "couldn't load" screen). Bump `VERSION` in it to drop old caches. `e2e/offline.spec.ts` covers it (Chromium only).
+- **One manifest per phone page** (`/app.webmanifest?start=/t/CODE`): the installed app opens the page it was added from, so an iPhone can add a workout to its Home Screen. Only `/t…` paths are accepted as start URLs.
+- **Presets:** every coach reads all presets (Box library); updates and deletes always filter by `ownerId` in SQL, and actions call `refresh()` so the lists re-render.
 - **Dependency build scripts** are disabled in `pnpm-workspace.yaml` (`allowBuilds`). Prebuilt binaries are enough.

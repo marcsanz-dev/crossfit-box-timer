@@ -14,18 +14,23 @@ A workout timer for the box **CrossFit Box**:
 
 ### As a coach (computer)
 
-_Coming in Phase 5._ Sign in with Google → choose a mode → configure it → **Send to phone** → show the QR or the code.
+1. Open [`/coach`](https://crossfit-box-timer.vercel.app/coach) and sign in with your @yaqbot.com Google account.
+2. Choose a mode and configure it. The preview shows exactly what the phone will display.
+3. **Send to phone.** The next page gives you one link: copy it for the rig phone (for example, through WhatsApp), scan its QR, or open it on this device.
+4. **Saved workouts:** give a workout a name and **Save to my workouts** to reuse or edit it later. The **Box library** tab lists the other coaches' workouts; **Use** loads one, **Duplicate** copies it into yours.
 
 ### On the phone (rig)
 
-Until the coach panel lands (Phase 5), open the built-in demo workouts at [`/t/demo`](https://crossfit-box-timer.vercel.app/t/demo).
+Open the link the coach sent, scan the QR, or type the code at [`/t`](https://crossfit-box-timer.vercel.app/t). No sign-in is needed. Demo workouts are at [`/t/demo`](https://crossfit-box-timer.vercel.app/t/demo).
 
 | Phone       | Recommended                                                                                                                                                                                                     |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **iPhone**  | Open the link in Safari, tap Share → **Add to Home Screen** and open it from the icon. If the app is already installed, open it and **type the code**. Only the Home Screen app is truly full screen on iPhone. |
 | **Android** | **Open the link or scan the QR**. Chrome goes full screen when you tap Start.                                                                                                                                   |
 
-Tap **Start** once. That also enables sound and keeps the screen on. Then leave the phone alone.
+Tap **Start** once. That also enables sound and keeps the screen on. Then leave the phone alone. Once a workout has loaded, the phone needs no network: the page even reloads offline.
+
+The phone pages can be installed as an app (stopwatch icon). `/t` offers an **Install** button on Android and shows the Share-menu steps on iPhone.
 
 ## Run it locally
 
@@ -43,6 +48,7 @@ pnpm dev          # http://localhost:3000
 | `pnpm test`                                    | Unit tests (Vitest)                                                                     |
 | `pnpm test:e2e`                                | End-to-end tests (Playwright; first run `pnpm exec playwright install chromium webkit`) |
 | `pnpm check`                                   | Lint + typecheck + format check + unit tests                                            |
+| `pnpm icons`                                   | Regenerate the app icons from the drawing in `scripts/generate-icons.mjs`               |
 
 ### Environment variables
 
@@ -80,7 +86,7 @@ Assumptions made instead of asking the client. Full reasoning is in [`docs/PLAN.
 4. **Sound** comes from the phone speaker by default; Bluetooth speakers are also supported.
 5. **The phone may run on battery.** We still recommend charging it and disabling power-saving modes.
 6. **iPhone:** beeps play even in Silent mode. The trade-off is that other audio on that same phone (for example music) is paused, so music should play from another device.
-7. **After downloading the workout, the phone doesn't need the network.** A reload mid-workout resumes at the right second.
+7. **After downloading the workout, the phone doesn't need the network.** A reload mid-workout resumes at the right second, even offline: a service worker keeps the last good copy of each phone page.
 8. **Presets belong to each coach.** Every coach can browse and duplicate colleagues' presets, for example to cover a class; only the owner can edit or delete them.
 9. **Spanish is the default language;** English and Catalan are an explicit choice. Yaqbot's customers are Spanish speakers.
 10. **One phone per class.** No multi-screen sync, no remote start, no round counting on the phone.

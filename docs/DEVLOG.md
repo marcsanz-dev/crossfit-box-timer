@@ -519,3 +519,71 @@ The iPhone test is still pending (a friend's phone).
 - on iPhone, the Home Screen web app in full screen.
 
 **What changed:** `dev` fast-forwarded to `main`, so Production deploys this phase. Production's Neon branch already had the `share` table.
+
+## Phase 6 — Extras — 2026-10-24 (built, not yet accepted)
+
+**What I asked:** "vamos a por la fase 6": presets per coach, the Box library, the installable web app and offline reloads.
+
+**What Claude did**
+
+1. **Presets and the Box library**
+   - **Database:** a new `preset` table (id, owner, workout as jsonb, timestamps), with migration `0002`, applied to the Neon `dev` branch.
+     - Every coach can read every preset.
+     - Updates and deletes filter by owner in SQL.
+     - There is a limit of 100 presets per coach.
+   - **Server Actions** (`preset-actions.ts`): save (create or update), duplicate and delete.
+     - Each one re-checks the session and validates its input with Zod.
+     - Each one calls `refresh()`, so the lists re-render.
+   - **UI:** a "Saved workouts" panel above the builder, with two accessible tabs.
+     - **My workouts:** Edit, and Delete with an inline confirmation.
+     - **Box library:** other coaches' workouts, with their author. **Use** loads one as a new workout; **Duplicate** copies it into mine.
+     - The builder gets "Save to my workouts", and while editing, "Save changes" and "Save as new".
+     - A preset needs a name.
+   - **Code structure**
+     - The form state moved into a `useWorkoutForm` hook, shared by the panel and the builder.
+     - `formStateFromWorkout` (with round-trip tests) loads a workout back into the form.
+2. **Installable web app**
+   - **A stopwatch icon** in the Start button's green. Every size comes from one drawing (`pnpm icons`): the SVG favicon, the Apple touch icon, and 192/512 icons plus a maskable one.
+   - **One manifest per phone page** (`/app.webmanifest?start=/t/CODE`).
+     - The installed app opens the page it was added from. This keeps the iPhone flow agreed in Phase 5 (add the workout page to the Home Screen) working. Installing from `/t` opens the code screen.
+     - The start path is validated, with unit tests: only `/t…` pages are accepted.
+   - **Install guide on `/t`:**
+     - Android: an "Install the app" button, from Chrome's `beforeinstallprompt`.
+     - iPhone: the Share → Add to Home Screen steps.
+     - Already installed: nothing.
+   - **iPhone:** a black-translucent status bar.
+3. **Offline reloads:** a hand-written service worker (`public/sw.js`), about 100 lines and no new dependency. Next's PWA guide points to a custom worker or Serwist.
+   - **Phone pages:** network first, falling back to the last good copy.
+   - **Build assets:** cache first.
+   - **Everything else** (coach area, auth) is untouched.
+   - **First visit:** the page sends the worker the URLs it has already loaded, so it works offline straight away.
+   - **"Couldn't load" screen:** marked, so it never replaces a good copy.
+   - **Registration:** in production builds only.
+
+**How it was checked**
+
+- **Unit:** 183 tests pass (presets input, form round-trips, manifest).
+- **e2e:** 131 pass. The new spec covers:
+  - per-page manifests;
+  - a phone page reloading and starting with the network off;
+  - the error page never being stored.
+- **Browser pane on a local production build:**
+  - the manifest, icons, Apple tags and service worker are active and controlling the page;
+  - a simulated install event shows and then hides the Install button;
+  - `/t` still fits the screen.
+- **Presets UI:** a temporary page with sample data (deleted), because `/coach` needs my sign-in:
+  - Edit / Use load the form;
+  - the editing banner and the delete confirmation work;
+  - saving without a session shows the session error.
+
+**What broke and what we changed**
+
+- **Lint and format:** nothing new.
+- **Browser-pane screenshots looked cropped** at desktop sizes. Measuring the page showed no horizontal overflow: it was the pane's scaling.
+
+**Pending for Phase 6**
+
+- **My check on the Preview with a real sign-in:** save, edit and delete presets; duplicate from the Box library (needs a second coach account, or two of my test accounts).
+- **Install on Android and iPhone.** The app must open full screen from the icon.
+- **Offline reload on a real phone:** load a workout, switch on airplane mode, reload.
+- **Production:** run `pnpm db:migrate:prod` (the `preset` table) before fast-forwarding `main`.
