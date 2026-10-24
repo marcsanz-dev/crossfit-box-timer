@@ -39,13 +39,26 @@ Run the **Full hour** demo ([`/t/demo/full-hour`](https://crossfit-box-timer.ver
 | B3  | Battery used in 60 min (%)                                     |         |        |
 | B4  | Same with battery saver / Low Power Mode ON (15 min is enough) |         |        |
 
-## C. iPhone installation
+## C. Installation
 
-| #   | Check                                                         | Result |
-| --- | ------------------------------------------------------------- | ------ |
-| C1  | Share → Add to Home Screen; the app opens without Safari bars |        |
-| C2  | The clock digits are bold (not thin)                          |        |
-| C3  | The status bar and notch don't cover the clock or the header  |        |
+| #   | Check                                                                                             | Android | iPhone |
+| --- | ------------------------------------------------------------------------------------------------- | ------- | ------ |
+| C1  | From `/t`: Android **Install the app** button / iPhone Share → Add to Home Screen; stopwatch icon |         |        |
+| C2  | The installed app opens without browser bars                                                      |         |        |
+| C3  | A workout page added to the Home Screen opens **that workout** (iPhone)                           | —       |        |
+| C4  | The clock digits are bold (not thin)                                                              |         |        |
+| C5  | The status bar and notch don't cover the clock or the header                                      |         |        |
+
+## D. Coach → phone, end to end (Phases 5–6)
+
+| #   | Check                                                                                                      | Android | iPhone |
+| --- | ---------------------------------------------------------------------------------------------------------- | ------- | ------ |
+| D1  | Each mode (For Time, AMRAP, EMOM) sent from the desktop opens on the phone with the right timing and texts |         |        |
+| D2  | Opening by QR, by a link pasted in WhatsApp, and by typing the code                                        |         |        |
+| D3  | A saved workout sent with **Send to phone** from the list                                                  |         |        |
+| D4  | Airplane mode after loading: the whole workout runs                                                        |         |        |
+| D5  | Airplane mode, then **reload**: the page comes back and starts                                             |         |        |
+| D6  | Demo texts follow the language (`/en/t/demo`, `/ca/t/demo`)                                                |         |        |
 
 ## Notes
 
