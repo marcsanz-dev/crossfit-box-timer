@@ -232,17 +232,17 @@ Each phase ends with: tests green, a DEVLOG entry, a plain-language explanation 
 
 ### Status (updated 2026-10-24)
 
-| Phase                           | Status                                         | What is left                                                                            |
-| ------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------- |
-| 0 Foundations                   | ✅ Done                                        | —                                                                                       |
-| 1 Timer engine                  | ✅ Done                                        | —                                                                                       |
-| 2 Phone timer                   | ✅ Done                                        | —                                                                                       |
-| 3 First deploy + real phones    | ✅ Done (real-device pass accepted 2026-10-24) | —                                                                                       |
-| 4 Auth + DB                     | ✅ Done (accepted 2026-10-23)                  | —                                                                                       |
-| 5 Coach panel + desktop → phone | ✅ Done (accepted 2026-10-24)                  | —                                                                                       |
-| 6 Extras                        | ✅ Done (accepted 2026-10-24)                  | —                                                                                       |
-| 7 Polish + verification         | ✅ Done (accepted 2026-10-24)                  | —                                                                                       |
-| 8 Delivery                      | 🟡 In progress                                 | Final README, half-page notes (`docs/NOTES.md`), conversation log, make the repo public |
+| Phase                           | Status                                         | What is left                                                                                                                                                            |
+| ------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 Foundations                   | ✅ Done                                        | —                                                                                                                                                                       |
+| 1 Timer engine                  | ✅ Done                                        | —                                                                                                                                                                       |
+| 2 Phone timer                   | ✅ Done                                        | —                                                                                                                                                                       |
+| 3 First deploy + real phones    | ✅ Done (real-device pass accepted 2026-10-24) | —                                                                                                                                                                       |
+| 4 Auth + DB                     | ✅ Done (accepted 2026-10-23)                  | —                                                                                                                                                                       |
+| 5 Coach panel + desktop → phone | ✅ Done (accepted 2026-10-24)                  | —                                                                                                                                                                       |
+| 6 Extras                        | ✅ Done (accepted 2026-10-24)                  | —                                                                                                                                                                       |
+| 7 Polish + verification         | ✅ Done (accepted 2026-10-24)                  | —                                                                                                                                                                       |
+| 8 Delivery                      | 🟡 In progress                                 | Done: final README, draft notes (`docs/NOTES.md`). Left: developer's review of the notes, export of the conversation log, make the repository public, send the delivery |
 
 **Phase 0 — Foundations** (docs + scaffold)
 

@@ -85,6 +85,7 @@ messages/{es,en,ca}.json   # translations; es.json is the source of the types
 e2e/                       # Playwright specs
 docs/PLAN.md               # agreed plan (source of truth)
 docs/DEVLOG.md             # phase-by-phase log
+docs/NOTES.md              # half-page delivery notes (summary of the DEVLOG)
 src/
   app/[locale]/            # all routes live under the locale segment
   components/              # React components (kebab-case files)
@@ -115,14 +116,14 @@ drizzle/                   # SQL migrations (committed)
 auth.cli.ts                # entry point for the Better Auth CLI only
 ```
 
-Current status per phase: `docs/PLAN.md` §8 "Status". Next up: Phase 7 acceptance (full real-device pass), then Phase 8 (delivery).
+Current status per phase: `docs/PLAN.md` §8 "Status". Next up: finish Phase 8 (export the conversation log, make the repository public, send the delivery).
 
 ## Environments and branches
 
-| Git branch | Vercel     | URL                                                                                  | Neon branch  |
-| ---------- | ---------- | ------------------------------------------------------------------------------------ | ------------ |
-| `dev`      | Preview    | `https://crossfit-box-timer-git-dev-marcsanz-dev.vercel.app` (Vercel Authentication) | `dev`        |
-| `main`     | Production | `https://crossfit-box-timer.vercel.app`                                              | `production` |
+| Git branch | Vercel     | URL                                                                                              | Neon branch  |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------ | ------------ |
+| `dev`      | Preview    | `https://crossfit-box-timer-git-dev-marcsanz-dev.vercel.app` (public; Vercel Authentication off) | `dev`        |
+| `main`     | Production | `https://crossfit-box-timer.vercel.app`                                                          | `production` |
 
 - **Work happens on `dev`.** `main` is fast-forwarded from it once a change is verified on the Preview.
 - **Env var names** are in `.env.example`.

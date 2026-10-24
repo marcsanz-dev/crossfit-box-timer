@@ -668,3 +668,34 @@ Claude's attempt to run the production migration was blocked by Claude Code's pe
 **Result:** I ran the real-device checklist (`docs/REAL-DEVICE-TESTS.md`, sections A–D) on my Android and a friend's iPhone. Every check passed. That also closes the real-device part left open in Phase 3.
 
 **What changed:** `dev` was fast-forwarded to `main`, so Production deploys Phase 7. No database change was needed.
+
+---
+
+## Phase 8 — Delivery — 2026-10-24 (in progress)
+
+**What I asked**
+
+- Make sure the README has the URL, how to use it, how to run it, "Assumptions & decisions" and "How I built this with Claude Code".
+- Keep this DEVLOG up to date.
+- Draft the half-page notes in English from the DEVLOG, in `docs/NOTES.md`.
+
+**What Claude did**
+
+- **README rewritten for delivery:**
+  - the "work in progress" banner removed;
+  - a summary table: live URL, demo, coach panel (who can sign in), repository, languages;
+  - step-by-step use for the coach and the phone, with the per-phone recommendation;
+  - local setup and every script;
+  - the stack, and the quality as delivered: tests, Lighthouse, real devices.
+- **"Assumptions & decisions"** now has 13 items, adding what was decided after Phase 4: the share snapshot and codes, offline reloads and installs, fit-the-screen, the presets rules, scope left out, and 0 € hosting.
+- **"How I built this with Claude Code"** expanded: plan first, `CLAUDE.md`, phases with acceptance, the `dev` → Preview → `main` flow, testing at three levels, how my phone feedback drove the UI, and how Claude's mistakes were caught.
+- **`docs/NOTES.md`:** about 300 words, in three parts (what I asked the AI, what broke, what I changed), drawn from this log.
+- **Small fixes:** `CLAUDE.md` no longer says the Preview is behind Vercel Authentication; the plan status is updated.
+- **Production:** `main` fast-forwarded, so the repository's default branch shows the final README.
+
+**Pending**
+
+- My review of `docs/NOTES.md`.
+- Export the conversation log.
+- Make the repository public.
+- Send the delivery: URL, repository, notes, log.
