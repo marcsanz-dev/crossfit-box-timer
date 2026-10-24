@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { workoutSchema } from "@/lib/timer/schema";
 import {
+  formStateFromWorkout,
   INITIAL_FORM_STATE,
   toWorkoutInput,
   validateWorkoutForm,
@@ -119,5 +121,49 @@ describe("validateWorkoutForm", () => {
     const result = validateWorkoutForm(state(patch));
     expect(result.ok).toBe(false);
     expect(result.errors).toEqual(expected);
+  });
+});
+
+describe("formStateFromWorkout", () => {
+  const workouts = [
+    { mode: "forTime", name: "Fran", capSeconds: 450, prepSeconds: 5 },
+    {
+      mode: "amrap",
+      description: "5 pull-ups\n10 push-ups",
+      durationSeconds: 1200,
+      prepSeconds: 10,
+    },
+    {
+      mode: "emom",
+      intervalSeconds: 90,
+      rounds: 8,
+      stations: ["Burpees", "Row"],
+      prepSeconds: 0,
+    },
+    { mode: "emom", intervalSeconds: 60, rounds: 10, prepSeconds: 10 },
+  ] as const;
+
+  it("round-trips every mode through the form unchanged", () => {
+    for (const input of workouts) {
+      const workout = workoutSchema.parse(input);
+      const result = validateWorkoutForm(formStateFromWorkout(workout));
+      expect(result.ok && result.workout).toEqual(workout);
+    }
+  });
+
+  it("splits durations into minutes and seconds", () => {
+    const form = formStateFromWorkout(workoutSchema.parse(workouts[0]));
+    expect(form).toMatchObject({
+      mode: "forTime",
+      capMinutes: 7,
+      capSeconds: 30,
+      name: "Fran",
+      description: "",
+    });
+  });
+
+  it("shows one empty exercise row for an EMOM without exercises", () => {
+    const form = formStateFromWorkout(workoutSchema.parse(workouts[3]));
+    expect(form.stations).toEqual([""]);
   });
 });

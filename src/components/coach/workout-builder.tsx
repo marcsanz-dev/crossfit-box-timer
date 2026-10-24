@@ -1,27 +1,25 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useMemo, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { createShareAction } from "@/app/[locale]/coach/actions";
+import { savePresetAction } from "@/app/[locale]/coach/preset-actions";
 import { useRouter } from "@/i18n/navigation";
 import {
   FORM_LIMITS,
   INITIAL_FORM_STATE,
   toWorkoutInput,
-  validateWorkoutForm,
   type FieldErrors,
   type FormErrorCode,
   type FormField,
   type WorkoutFormState,
 } from "@/lib/coach/workout-form";
 import { formatClock } from "@/lib/timer/format";
-import {
-  PREP_SECONDS_OPTIONS,
-  type Workout,
-  type WorkoutMode,
-} from "@/lib/timer/schema";
+import { PREP_SECONDS_OPTIONS, type WorkoutMode } from "@/lib/timer/schema";
 import { DurationInput, Field, inputClass } from "./form-controls";
 import { PhonePreview } from "./phone-preview";
+import { usePresetErrorText, type EditingPreset } from "./preset-panel";
+import type { WorkoutFormEditor } from "./use-workout-form";
 
 const MODES: WorkoutMode[] = ["forTime", "amrap", "emom"];
 const MODE_KEYS = {
@@ -30,28 +28,33 @@ const MODE_KEYS = {
   emom: { label: "modeEmom", hint: "modeEmomHint" },
 } as const;
 
-/** The coach's workout form, with a live preview of the phone screen. */
-export function WorkoutBuilder() {
-  const t = useTranslations("Builder");
-  const router = useRouter();
-  const [form, setForm] = useState<WorkoutFormState>(INITIAL_FORM_STATE);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
+type Status = { kind: "ok" | "error"; text: string } | null;
 
-  const validation = useMemo(() => validateWorkoutForm(form), [form]);
-  // Keep showing the last valid workout (dimmed) while a field is being corrected.
-  const [lastValid, setLastValid] = useState<Workout | null>(() => {
-    const initial = validateWorkoutForm(INITIAL_FORM_STATE);
-    return initial.ok ? initial.workout : null;
-  });
-  const preview = validation.ok ? validation.workout : lastValid;
+/** The coach's workout form, with a live preview of the phone screen. */
+export function WorkoutBuilder({
+  editor,
+  editing,
+  onEditingChange,
+}: {
+  editor: WorkoutFormEditor;
+  /** The coach's own preset being edited, if any: "Save" then updates it. */
+  editing: EditingPreset | null;
+  onEditingChange: (editing: EditingPreset | null) => void;
+}) {
+  const t = useTranslations("Builder");
+  const tp = useTranslations("Presets");
+  const presetErrorText = usePresetErrorText();
+  const router = useRouter();
+  const { form, validation, preview } = editor;
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<Status>(null);
+  const [pending, startTransition] = useTransition();
+  const [saving, startSaving] = useTransition();
 
   const update = (patch: Partial<WorkoutFormState>) => {
-    const next = { ...form, ...patch };
-    const nextValidation = validateWorkoutForm(next);
-    if (nextValidation.ok) setLastValid(nextValidation.workout);
     setSubmitError(null);
-    setForm(next);
+    setSaveStatus(null);
+    editor.update(patch);
   };
   const errorText = useErrorText();
   const error = (field: FormField) => errorText(field, validation.errors);
@@ -73,6 +76,38 @@ export function WorkoutBuilder() {
     });
   };
 
+  const save = (asNew: boolean) => {
+    if (!validation.ok) {
+      setSaveStatus({ kind: "error", text: t("errorForm") });
+      return;
+    }
+    const name = validation.workout.name;
+    if (!name) {
+      setSaveStatus({ kind: "error", text: presetErrorText("noName") });
+      document.getElementById("name")?.focus();
+      return;
+    }
+    startSaving(async () => {
+      const result = await savePresetAction({
+        id: asNew ? undefined : editing?.id,
+        workout: toWorkoutInput(form),
+      });
+      if (result.ok) {
+        onEditingChange({ id: result.id, name });
+        setSaveStatus({ kind: "ok", text: tp("saved", { name }) });
+      } else {
+        setSaveStatus({ kind: "error", text: presetErrorText(result.error) });
+      }
+    });
+  };
+
+  const startNew = () => {
+    setSubmitError(null);
+    setSaveStatus(null);
+    editor.replace(INITIAL_FORM_STATE);
+    onEditingChange(null);
+  };
+
   const emomTotal =
     form.mode === "emom" && validation.ok && validation.workout.mode === "emom"
       ? formatClock(
@@ -90,6 +125,20 @@ export function WorkoutBuilder() {
       className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]"
     >
       <div className="flex flex-col gap-7">
+        {editing && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-coach-line bg-coach-surface px-4 py-3">
+            <p className="font-semibold">
+              {tp("editing", { name: editing.name })}
+            </p>
+            <button
+              type="button"
+              onClick={startNew}
+              className="min-h-10 rounded-lg px-3 text-sm font-semibold underline-offset-4 hover:underline"
+            >
+              {tp("startNew")}
+            </button>
+          </div>
+        )}
         <fieldset>
           <legend className="mb-3 text-sm font-semibold">
             {t("modeLabel")}
@@ -254,6 +303,36 @@ export function WorkoutBuilder() {
           className="min-h-6 text-sm font-medium text-red-700 dark:text-red-400"
         >
           {submitError}
+        </p>
+        <div className="flex flex-wrap items-center gap-3 border-t border-coach-line pt-5">
+          <button
+            type="button"
+            onClick={() => save(false)}
+            disabled={saving}
+            className="min-h-12 rounded-xl border-2 border-coach-fg px-5 font-bold hover:bg-coach-surface disabled:opacity-60"
+          >
+            {saving ? tp("saving") : editing ? tp("saveChanges") : tp("save")}
+          </button>
+          {editing && (
+            <button
+              type="button"
+              onClick={() => save(true)}
+              disabled={saving}
+              className="min-h-12 rounded-xl px-3 font-semibold underline-offset-4 hover:underline disabled:opacity-60"
+            >
+              {tp("saveAsNew")}
+            </button>
+          )}
+        </div>
+        <p
+          aria-live="polite"
+          className={`min-h-6 text-sm font-medium ${
+            saveStatus?.kind === "error"
+              ? "text-red-700 dark:text-red-400"
+              : "text-coach-muted"
+          }`}
+        >
+          {saveStatus?.text}
         </p>
       </div>
     </form>

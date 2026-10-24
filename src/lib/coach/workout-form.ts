@@ -103,6 +103,43 @@ export function toWorkoutInput(state: WorkoutFormState): WorkoutInput {
   }
 }
 
+const splitSeconds = (total: number) => ({
+  minutes: Math.floor(total / 60),
+  seconds: total % 60,
+});
+
+/** The form showing a saved workout, so a coach can load a preset and edit it. */
+export function formStateFromWorkout(workout: Workout): WorkoutFormState {
+  const state: WorkoutFormState = {
+    ...INITIAL_FORM_STATE,
+    mode: workout.mode,
+    name: workout.name ?? "",
+    description: workout.description ?? "",
+    prepSeconds: workout.prepSeconds,
+  };
+  switch (workout.mode) {
+    case "forTime": {
+      const { minutes, seconds } = splitSeconds(workout.capSeconds);
+      return { ...state, capMinutes: minutes, capSeconds: seconds };
+    }
+    case "amrap": {
+      const { minutes, seconds } = splitSeconds(workout.durationSeconds);
+      return { ...state, durationMinutes: minutes, durationSeconds: seconds };
+    }
+    case "emom": {
+      const { minutes, seconds } = splitSeconds(workout.intervalSeconds);
+      return {
+        ...state,
+        intervalMinutes: minutes,
+        intervalSeconds: seconds,
+        rounds: workout.rounds,
+        // The form always shows at least one (empty) exercise row.
+        stations: workout.stations.length > 0 ? [...workout.stations] : [""],
+      };
+    }
+  }
+}
+
 export type FormValidation =
   | { ok: true; workout: Workout; errors: FieldErrors }
   | { ok: false; errors: FieldErrors };

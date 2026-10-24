@@ -3,8 +3,9 @@ import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 import { SignInButton, SignOutButton } from "@/components/coach/auth-buttons";
-import { WorkoutBuilder } from "@/components/coach/workout-builder";
+import { CoachWorkspace } from "@/components/coach/coach-workspace";
 import { getAuth } from "@/auth/server";
+import { listPresets, type PresetLists } from "@/db/presets";
 
 export default function CoachPage() {
   return (
@@ -27,6 +28,13 @@ async function CoachGate() {
 
   const t = await getTranslations("Coach");
   const tb = await getTranslations("Builder");
+  // The builder still works when the presets can't be read.
+  let presets: PresetLists | null = null;
+  try {
+    presets = await listPresets(session.user.id);
+  } catch (error) {
+    console.error("listPresets failed", error);
+  }
   return (
     <section className="flex flex-col gap-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -39,7 +47,7 @@ async function CoachGate() {
         </div>
         <SignOutButton />
       </div>
-      <WorkoutBuilder />
+      <CoachWorkspace presets={presets} />
     </section>
   );
 }
