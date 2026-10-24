@@ -587,3 +587,16 @@ The iPhone test is still pending (a friend's phone).
 - **Install on Android and iPhone.** The app must open full screen from the icon.
 - **Offline reload on a real phone:** load a workout, switch on airplane mode, reload.
 - **Production:** run `pnpm db:migrate:prod` (the `preset` table) before fast-forwarding `main`.
+
+### Phase 6 — feedback on the saved workouts (2026-10-24)
+
+**What I asked**
+
+- Every saved workout needs a "Send to phone" button, without going through Edit first.
+- "Box library" and "Save as new" looked like plain text: give them a visible button frame.
+
+**What Claude changed**
+
+- **Each preset card** has a full-width **Send to phone** button, which goes straight to the share page. Below it, Edit/Delete (my workouts) or Use/Duplicate (library) sit side by side, so cards stay tidy with three per row.
+- **Visible frames:** both tabs now have a border, and so do "Save as new" and the "Start a new one" button in the editing banner.
+- **Checked:** in the browser pane through a temporary page (deleted), in both themes. `pnpm check` and `pnpm test:e2e` pass.

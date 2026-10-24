@@ -133,7 +133,7 @@ export function WorkoutBuilder({
             <button
               type="button"
               onClick={startNew}
-              className="min-h-10 rounded-lg px-3 text-sm font-semibold underline-offset-4 hover:underline"
+              className="min-h-10 rounded-lg border border-coach-line px-3 text-sm font-semibold hover:bg-coach-bg"
             >
               {tp("startNew")}
             </button>
@@ -318,7 +318,7 @@ export function WorkoutBuilder({
               type="button"
               onClick={() => save(true)}
               disabled={saving}
-              className="min-h-12 rounded-xl px-3 font-semibold underline-offset-4 hover:underline disabled:opacity-60"
+              className="min-h-12 rounded-xl border border-coach-line px-4 font-semibold hover:bg-coach-surface disabled:opacity-60"
             >
               {tp("saveAsNew")}
             </button>

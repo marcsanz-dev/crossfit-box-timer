@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useId, useState, useTransition, type KeyboardEvent } from "react";
+import { createShareAction } from "@/app/[locale]/coach/actions";
 import {
   deletePresetAction,
   duplicatePresetAction,
@@ -9,6 +10,7 @@ import {
 } from "@/app/[locale]/coach/preset-actions";
 import { useModeLabel } from "@/components/timer/use-mode-label";
 import type { PresetLists, PresetSummary } from "@/db/presets";
+import { useRouter } from "@/i18n/navigation";
 import { MAX_PRESETS_PER_COACH } from "@/lib/coach/preset";
 
 export interface EditingPreset {
@@ -57,8 +59,11 @@ export function PresetPanel({
   onDeleted: (id: string) => void;
 }) {
   const t = useTranslations("Presets");
+  const tb = useTranslations("Builder");
   const errorText = usePresetErrorText();
+  const router = useRouter();
   const baseId = useId();
+  const [sendingId, setSendingId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("mine");
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -73,6 +78,23 @@ export function PresetPanel({
       const result = await action();
       if (result.ok) onOk(result);
       else setStatus(errorText(result.error));
+    });
+  };
+
+  // Straight to the phone, without loading the preset into the form first.
+  const send = (preset: PresetSummary) => {
+    setStatus(null);
+    setSendingId(preset.id);
+    startTransition(async () => {
+      const result = await createShareAction(preset.workout);
+      if (result.ok) {
+        router.push(`/coach/share/${result.code}`);
+        return;
+      }
+      setSendingId(null);
+      setStatus(
+        tb(result.error === "session" ? "errorSession" : "errorServer"),
+      );
     });
   };
 
@@ -136,7 +158,7 @@ export function PresetPanel({
               tabIndex={tab === key ? 0 : -1}
               onKeyDown={onTabKey}
               onClick={() => setTab(key)}
-              className="min-h-10 rounded-lg px-3 text-sm font-semibold text-coach-muted hover:bg-coach-surface aria-selected:bg-coach-fg aria-selected:text-coach-bg"
+              className="min-h-10 rounded-lg border border-coach-line px-3 text-sm font-semibold text-coach-muted hover:bg-coach-surface aria-selected:border-coach-fg aria-selected:bg-coach-fg aria-selected:text-coach-bg"
             >
               {label} <span className="tabular-nums">({count})</span>
             </button>
@@ -165,6 +187,8 @@ export function PresetPanel({
                 editing={preset.id === editingId}
                 confirming={preset.id === confirmingId}
                 disabled={pending}
+                sending={preset.id === sendingId}
+                onSend={() => send(preset)}
                 onLoad={() => load(preset, tab === "mine")}
                 onDuplicate={() => duplicate(preset)}
                 onAskDelete={() => setConfirmingId(preset.id)}
@@ -192,6 +216,8 @@ function PresetCard({
   editing,
   confirming,
   disabled,
+  sending,
+  onSend,
   onLoad,
   onDuplicate,
   onAskDelete,
@@ -203,6 +229,8 @@ function PresetCard({
   editing: boolean;
   confirming: boolean;
   disabled: boolean;
+  sending: boolean;
+  onSend: () => void;
   onLoad: () => void;
   onDuplicate: () => void;
   onAskDelete: () => void;
@@ -210,6 +238,7 @@ function PresetCard({
   onDelete: () => void;
 }) {
   const t = useTranslations("Presets");
+  const tb = useTranslations("Builder");
   const modeLabel = useModeLabel(preset.workout);
   const name = preset.workout.name ?? modeLabel;
 
@@ -250,37 +279,48 @@ function PresetCard({
           </button>
         </div>
       ) : (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-2">
           <button
             type="button"
-            onClick={onLoad}
+            onClick={onSend}
             disabled={disabled}
-            aria-label={`${own ? t("edit") : t("use")}: ${name}`}
-            className={smallButton}
+            aria-label={`${tb("send")}: ${name}`}
+            className="min-h-10 rounded-lg bg-coach-fg px-3 text-sm font-bold text-coach-bg hover:opacity-90 disabled:opacity-60"
           >
-            {own ? t("edit") : t("use")}
+            {sending ? tb("sending") : tb("send")}
           </button>
-          {own ? (
+          <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
-              onClick={onAskDelete}
+              onClick={onLoad}
               disabled={disabled}
-              aria-label={`${t("delete")}: ${name}`}
+              aria-label={`${own ? t("edit") : t("use")}: ${name}`}
               className={smallButton}
             >
-              {t("delete")}
+              {own ? t("edit") : t("use")}
             </button>
-          ) : (
-            <button
-              type="button"
-              onClick={onDuplicate}
-              disabled={disabled}
-              aria-label={`${t("duplicate")}: ${name}`}
-              className={smallButton}
-            >
-              {t("duplicate")}
-            </button>
-          )}
+            {own ? (
+              <button
+                type="button"
+                onClick={onAskDelete}
+                disabled={disabled}
+                aria-label={`${t("delete")}: ${name}`}
+                className={smallButton}
+              >
+                {t("delete")}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={onDuplicate}
+                disabled={disabled}
+                aria-label={`${t("duplicate")}: ${name}`}
+                className={smallButton}
+              >
+                {t("duplicate")}
+              </button>
+            )}
+          </div>
         </div>
       )}
     </li>
