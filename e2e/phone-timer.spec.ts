@@ -117,10 +117,10 @@ test("shows every exercise line without truncating it", async ({ page }) => {
   await advance(page, 10_000);
 
   const description = page.locator("span:visible", {
-    hasText: "15 air squats",
+    hasText: "15 sentadillas",
   });
   await expect(description).toBeVisible();
-  await expect(description).toContainText("5 pull-ups");
+  await expect(description).toContainText("5 dominadas");
   // A clamped element scrolls internally: its content would be taller than its box.
   const clipped = await description.evaluate(
     (el) => el.scrollHeight > el.clientHeight + 1,

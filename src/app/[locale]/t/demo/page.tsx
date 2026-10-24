@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useModeLabel } from "@/components/timer/use-mode-label";
 import { Link } from "@/i18n/navigation";
-import { DEMO_SLUGS, DEMO_WORKOUTS, type DemoSlug } from "@/lib/timer/demos";
+import { DEMO_SLUGS, getDemoWorkout, type DemoSlug } from "@/lib/timer/demos";
 import { phoneMetadata } from "../phone-metadata";
 
 export async function generateMetadata({
@@ -34,7 +34,7 @@ export default function DemoListPage() {
 
 function DemoLink({ slug }: { slug: DemoSlug }) {
   const t = useTranslations("Demos");
-  const workout = DEMO_WORKOUTS[slug];
+  const workout = getDemoWorkout(slug, useLocale());
   const modeLabel = useModeLabel(workout);
 
   return (

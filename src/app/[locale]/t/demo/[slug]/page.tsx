@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TimerScreen } from "@/components/timer/timer-screen";
-import { DEMO_SLUGS, DEMO_WORKOUTS, isDemoSlug } from "@/lib/timer/demos";
+import { DEMO_SLUGS, getDemoWorkout, isDemoSlug } from "@/lib/timer/demos";
 import { phoneMetadata } from "../../phone-metadata";
 
 export function generateStaticParams() {
@@ -21,12 +21,12 @@ export async function generateMetadata({
 export default async function DemoTimerPage({
   params,
 }: PageProps<"/[locale]/t/demo/[slug]">) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   if (!isDemoSlug(slug)) notFound();
 
   return (
     <TimerScreen
-      workout={DEMO_WORKOUTS[slug]}
+      workout={getDemoWorkout(slug, locale)}
       sessionKey={`demo:${slug}`}
       exitHref="/t/demo"
     />
