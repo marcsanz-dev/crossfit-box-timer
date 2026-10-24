@@ -3,6 +3,11 @@
     "title": "CrossFit Box · Temporizador",
     "description": "Configura el entreno en el ordenador y llévalo al móvil del rig."
   },
+  "Manifest": {
+    "name": "Temporizador CrossFit Box",
+    "shortName": "Box Timer",
+    "description": "Temporizador a pantalla completa, con pitidos, para el móvil del rig."
+  },
   "Home": {
     "title": "Temporizador de CrossFit Box",
     "tagline": "Configura el entreno en el ordenador. El móvil del rig hace el resto.",
@@ -186,6 +191,8 @@
     "loadFailedTitle": "No se ha podido cargar",
     "loadFailedBody": "Revisa la conexión del móvil y vuelve a intentarlo.",
     "retry": "Reintentar",
-    "tryAgain": "Probar otro código"
+    "tryAgain": "Probar otro código",
+    "install": "Instalar la app en este móvil",
+    "installIos": "Para tenerla a pantalla completa: Compartir → Añadir a pantalla de inicio."
   }
 }

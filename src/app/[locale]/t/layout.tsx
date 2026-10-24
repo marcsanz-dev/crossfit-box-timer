@@ -1,4 +1,11 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
+import { OfflineSupport } from "@/components/timer/offline-support";
+
+// iPhone: the Home Screen app draws under the status bar; PhoneFrame keeps
+// content clear of it with safe-area padding.
+export const metadata: Metadata = {
+  appleWebApp: { title: "Box Timer", statusBarStyle: "black-translucent" },
+};
 
 export const viewport: Viewport = {
   themeColor: "#000000",
@@ -11,6 +18,7 @@ export const viewport: Viewport = {
 export default function PhoneLayout({ children }: LayoutProps<"/[locale]/t">) {
   return (
     <div className="min-h-dvh overscroll-none bg-phone-bg text-phone-fg">
+      <OfflineSupport />
       {children}
     </div>
   );

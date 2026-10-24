@@ -10,6 +10,7 @@ import {
   normalizeCode,
 } from "@/lib/share/code";
 import { getStoredShareCode, SESSION_STORAGE_KEY } from "@/lib/timer/session";
+import { InstallHint } from "./install-hint";
 
 const noSubscribe = () => () => {};
 
@@ -123,6 +124,7 @@ export function CodeEntry() {
         >
           {t("demos")}
         </Link>
+        <InstallHint />
       </nav>
     </main>
   );

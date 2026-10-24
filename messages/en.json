@@ -3,6 +3,11 @@
     "title": "CrossFit Box · Timer",
     "description": "Set up the workout on the computer and send it to the phone on the rig."
   },
+  "Manifest": {
+    "name": "CrossFit Box Timer",
+    "shortName": "Box Timer",
+    "description": "Full-screen timer with beeps for the phone on the rig."
+  },
   "Home": {
     "title": "CrossFit Box Timer",
     "tagline": "Set up the workout on the computer. The phone on the rig does the rest.",
@@ -186,6 +191,8 @@
     "loadFailedTitle": "Couldn't load the workout",
     "loadFailedBody": "Check the phone's connection and try again.",
     "retry": "Retry",
-    "tryAgain": "Try another code"
+    "tryAgain": "Try another code",
+    "install": "Install the app on this phone",
+    "installIos": "For full screen: Share → Add to Home Screen."
   }
 }

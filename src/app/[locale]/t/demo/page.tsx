@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { useModeLabel } from "@/components/timer/use-mode-label";
 import { Link } from "@/i18n/navigation";
 import { DEMO_SLUGS, DEMO_WORKOUTS, type DemoSlug } from "@/lib/timer/demos";
+import { phoneMetadata } from "../phone-metadata";
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/t/demo">): Promise<Metadata> {
+  const { locale } = await params;
+  return phoneMetadata(locale, "/t/demo");
+}
 
 export default function DemoListPage() {
   const t = useTranslations("Demos");
