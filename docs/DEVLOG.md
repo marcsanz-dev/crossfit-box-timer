@@ -508,3 +508,14 @@ The iPhone test is still pending (a friend's phone).
   - Checked in the browser pane through a temporary page (deleted). The page fits with no scrolling at 1280×600, 1024×640, 1366×650 and 1920×950, in both themes.
   - On a 375 px phone it scrolls, as expected for a desktop page, with no horizontal scroll.
 - **Phase 6 note:** iPhones may now add a `/t/CODE` page to the Home Screen, so the manifest must keep that working.
+
+### Phase 5 — accepted (2026-10-24)
+
+**Result:** everything passed on the desktop, on my Android and on a friend's iPhone:
+
+- the three modes;
+- QR, a link through WhatsApp, and a typed code;
+- running offline;
+- on iPhone, the Home Screen web app in full screen.
+
+**What changed:** `dev` fast-forwarded to `main`, so Production deploys this phase. Production's Neon branch already had the `share` table.
