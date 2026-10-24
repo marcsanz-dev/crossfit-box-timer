@@ -600,3 +600,19 @@ The iPhone test is still pending (a friend's phone).
 - **Each preset card** has a full-width **Send to phone** button, which goes straight to the share page. Below it, Edit/Delete (my workouts) or Use/Duplicate (library) sit side by side, so cards stay tidy with three per row.
 - **Visible frames:** both tabs now have a border, and so do "Save as new" and the "Start a new one" button in the editing banner.
 - **Checked:** in the browser pane through a temporary page (deleted), in both themes. `pnpm check` and `pnpm test:e2e` pass.
+
+### Phase 6 — accepted (2026-10-24)
+
+**Result:** everything I tested on the Preview works:
+
+- presets: save, edit, delete, and send to the phone straight from the list;
+- the Box library;
+- installing the app;
+- reloading offline.
+
+**Going to production**
+
+1. Apply migration `0002` (the `preset` table) to Neon `production` with `pnpm db:migrate:prod`.
+2. Then fast-forward `main`.
+
+Claude's attempt to run the production migration was blocked by Claude Code's permission check, so I run it myself.
