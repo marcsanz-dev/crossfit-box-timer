@@ -15,6 +15,13 @@
       "when": 1792785740376,
       "tag": "0001_shares",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792831005371,
+      "tag": "0002_presets",
+      "breakpoints": true
     }
   ]
 }
