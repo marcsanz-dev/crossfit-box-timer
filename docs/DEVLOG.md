@@ -662,3 +662,9 @@ Claude's attempt to run the production migration was blocked by Claude Code's pe
 **Checks:** 190 unit tests and 226 e2e tests pass (4 skipped: service workers on WebKit).
 
 **Pending for Phase 7:** the full real-device pass on Android and iPhone (`docs/REAL-DEVICE-TESTS.md`, sections A–D).
+
+### Phase 7 — accepted (2026-10-24)
+
+**Result:** I ran the real-device checklist (`docs/REAL-DEVICE-TESTS.md`, sections A–D) on my Android and a friend's iPhone. Every check passed. That also closes the real-device part left open in Phase 3.
+
+**What changed:** `dev` was fast-forwarded to `main`, so Production deploys Phase 7. No database change was needed.

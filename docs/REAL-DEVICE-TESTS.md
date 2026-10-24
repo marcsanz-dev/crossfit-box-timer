@@ -1,5 +1,7 @@
 # Real-device tests
 
+> **Result (2026-10-24):** the developer ran this checklist on their Android (OnePlus 10T) and a friend's iPhone and reported that every check passed. Individual measurements (such as battery use) were not recorded.
+
 Emulators can't confirm sound, the wake lock or battery behaviour, so these runs are done on real phones against production: **https://crossfit-box-timer.vercel.app**.
 
 Fill in one table per device. Result: ✅ works · ⚠️ works with a caveat (write it) · ❌ fails (write what happened).
