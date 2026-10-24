@@ -479,3 +479,32 @@ One entry per phase: what I asked Claude, what it did, what broke, and what we c
 - Browser pane, through a temporary page with sample data (deleted): desktop light and dark, and a 375 px phone width with no horizontal scroll.
 - The copied value is the full URL.
 - **Checks:** `pnpm check` and `pnpm test:e2e` pass.
+
+### Phase 5 — my end-to-end tests and the share page on one screen (2026-10-24)
+
+**My tests:** everything works on the desktop and on my Android:
+
+- the three modes;
+- QR, link through WhatsApp, and typed code;
+- running offline after loading.
+
+The iPhone test is still pending (a friend's phone).
+
+**What I asked**
+
+- Put "On another device" on the left: it's the usual case.
+- Remove the link shown at the top: the two buttons already open and copy it.
+- Update the iPhone tip, which still told coaches to type the code.
+- Fit the whole page on one screen, with no scrolling.
+
+**What Claude changed**
+
+- **"On another device" comes first and is wider.** The QR sits beside the copy button, with a short caption.
+- The link block at the top is gone. "Set up another workout" moved up next to the title.
+- **New iPhone tip:** open the link in Safari, then Share → Add to Home Screen, and open it from the icon. If the app is already installed, type the code, which stays visible only there.
+  - Why the code stays: an app installed earlier opens on `/t`, and links never open inside it.
+  - `docs/PLAN.md` and `README.md` were updated to match.
+- **The tips use inline titles, and the coach area has less vertical padding.**
+  - Checked in the browser pane through a temporary page (deleted). The page fits with no scrolling at 1280×600, 1024×640, 1366×650 and 1920×950, in both themes.
+  - On a 375 px phone it scrolls, as expected for a desktop page, with no horizontal scroll.
+- **Phase 6 note:** iPhones may now add a `/t/CODE` page to the Home Screen, so the manifest must keep that working.

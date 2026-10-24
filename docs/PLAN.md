@@ -109,20 +109,20 @@ They are tuned in the 1–3 kHz range to cut through gym noise, and we adjust th
 | --------------------- | ------- | --------------------------------------------------------------------------------------------------------------- |
 | `/`                   | public  | Landing with "Coach sign-in" and "Open timer (enter code)"                                                      |
 | `/coach`              | coaches | Workout builder (mode tabs, live preview of the phone screen), "Send to phone", my presets, Box library         |
-| `/coach/share/[code]` | coaches | Big QR and short code to show on the desktop                                                                    |
+| `/coach/share/[code]` | coaches | One link: copy it for another device (with a QR) or open it here; fits one desktop screen                       |
 | `/t`                  | public  | **Phone home**: enter a 6-character code and reopen the last workout. This is the installed web app's start URL |
 | `/t/[code]`           | public  | Loads the workout snapshot, stores it locally, shows "Ready" with a big **Start** button, then the timer        |
 | `/api/auth/[...all]`  | —       | Better Auth handler                                                                                             |
 
-**Why both QR and code:** on iPhone, scanning a QR opens Safari, not the installed Home Screen app. So in the installed app the coach **types the code**. The QR is the fast path in the normal browser.
+**Why a link, a QR and a code:** the link (copied into WhatsApp, for example) and the QR open the workout in the phone's browser. On iPhone that is Safari, not an installed Home Screen app, so the coach adds the workout page to the Home Screen from there. An app installed earlier opens on `/t`, so the code is still shown, inside the iPhone tip. _(Revised 2026-10-24 after the developer's review of the share page.)_
 
 **Recommended method per phone.** The share page on the desktop shows both, with this guidance:
 
-| Phone                 | Recommended                                                                  | Why                                                                                               |
-| --------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| **iPhone**            | Install once ("Add to Home Screen"), then open the app and **type the code** | Only the Home Screen app is truly full screen on iPhone, and a scanned QR opens in Safari instead |
-| **Android**           | **Scan the QR** with the camera; it opens in Chrome                          | Chrome on Android supports real full screen from the browser, so no install is needed             |
-| Any phone, quick test | Scan the QR                                                                  | Fastest, at the cost of browser bars on iPhone                                                    |
+| Phone                 | Recommended                                                                                                                 | Why                                                                                       |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **iPhone**            | Open the link in Safari, then Share → Add to Home Screen and open it from the icon; if already installed, **type the code** | Only the Home Screen app is truly full screen on iPhone, and links and QRs open in Safari |
+| **Android**           | **Open the link or scan the QR**; it opens in Chrome                                                                        | Chrome on Android supports real full screen from the browser, so no install is needed     |
+| Any phone, quick test | Scan the QR                                                                                                                 | Fastest, at the cost of browser bars on iPhone                                            |
 
 The phone page also detects iPhone Safari outside the Home Screen app and suggests installing it, without blocking the timer.
 
@@ -282,7 +282,7 @@ Each phase ends with: tests green, a DEVLOG entry, a plain-language explanation 
 - Mode forms with validation and a live preview; "Send to phone" creates a `share` snapshot; QR and code page; `/t` code entry; `/t/[code]` loads the workout, then runs offline.
 - ✅ Done when a coach builds each of the three modes on desktop, the phone opens it via QR **and** via code, and the timer runs with Wi-Fi turned off after loading.
 
-**Phase 6 — Extras**: presets, Box library (duplicate), installable web app (manifest, icons, install guide), offline reload (service worker).
+**Phase 6 — Extras**: presets, Box library (duplicate), installable web app (manifest, icons, install guide), offline reload (service worker). Note (2026-10-24): iPhones may add a `/t/CODE` page to the Home Screen, so the manifest must keep that working (check how `start_url` interacts with it).
 
 - ✅ Done when presets CRUD and duplicate work, the Home Screen app opens `/t` full screen on iPhone and Android, and a reload works offline.
 

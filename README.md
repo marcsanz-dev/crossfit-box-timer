@@ -20,10 +20,10 @@ _Coming in Phase 5._ Sign in with Google → choose a mode → configure it → 
 
 Until the coach panel lands (Phase 5), open the built-in demo workouts at [`/t/demo`](https://crossfit-box-timer.vercel.app/t/demo).
 
-| Phone       | Recommended                                                                                                                                      |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **iPhone**  | Install once (Share → **Add to Home Screen**), then open the app and **type the code**. Only the Home Screen app is truly full screen on iPhone. |
-| **Android** | **Scan the QR** with the camera. Chrome goes full screen when you tap Start.                                                                     |
+| Phone       | Recommended                                                                                                                                                                                                     |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **iPhone**  | Open the link in Safari, tap Share → **Add to Home Screen** and open it from the icon. If the app is already installed, open it and **type the code**. Only the Home Screen app is truly full screen on iPhone. |
+| **Android** | **Open the link or scan the QR**. Chrome goes full screen when you tap Start.                                                                                                                                   |
 
 Tap **Start** once. That also enables sound and keeps the screen on. Then leave the phone alone.
 
