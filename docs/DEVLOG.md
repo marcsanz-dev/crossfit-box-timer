@@ -616,3 +616,49 @@ The iPhone test is still pending (a friend's phone).
 2. Then fast-forward `main`.
 
 Claude's attempt to run the production migration was blocked by Claude Code's permission check, so I run it myself.
+
+## Phase 7 — Polish + verification — 2026-10-24 (built, not yet accepted)
+
+**What I asked:** "Adelante con la Fase 7."
+
+**What Claude did**
+
+1. **Demo workouts in three languages.**
+   - `getDemoWorkout(slug, locale)` merges each demo's timing with its texts in es/en/ca.
+   - Exercises that boxes say in Spanish or Catalan are translated (pull-ups → dominadas / dominades). Thrusters, KB swings, burpees and wall balls stay in English.
+   - Tests check that only the texts change between languages.
+2. **A real landing page** at `/`, in the coach area's light and dark identity:
+   - the stopwatch icon and the brand;
+   - two entry cards: "I'm a coach" → `/coach`, and "Phone on the rig" → `/t`, plus a demo link;
+   - "How it works" in three steps.
+3. **Message audit:** all keys exist in es/en/ca, and no hard-coded UI text was found. One unused key was removed.
+4. **Accessibility**
+   - `@axe-core/playwright` 4.14 (latest stable, checked on npm 2026-10-24).
+   - New `e2e/a11y.spec.ts`: WCAG 2.2 A/AA on every public page in light and dark mode, on all five device profiles, plus the running timer with the controls and the stop dialog open. 95 checks, 0 violations.
+   - **Coach panel** (needs a session): checked with axe through a temporary page with sample data (deleted). The workspace (presets, editing banner, library tab, builder) and the share page have no violations in either theme.
+     - The only finding was the **dimmed preview** shown while a field is invalid. It is intentional (it marks the preview as out of date), decorative (`aria-hidden`) and exempt from contrast under WCAG 1.4.3 (inactive or decorative content), so it was kept.
+5. **Lighthouse (mobile)** on a local production build:
+
+   | Page            | Performance | Accessibility | Best practices | SEO |
+   | --------------- | ----------- | ------------- | -------------- | --- |
+   | `/t`            | 99          | 100           | 100            | 100 |
+   | `/t/demo/amrap` | 99          | 100           | 100            | 100 |
+   | `/`             | 99          | 100           | 100            | 100 |
+
+   LCP is about 2.0 s, TBT 40 ms and CLS 0. The target was Accessibility ≥ 95 and Performance ≥ 90.
+
+6. **The real-device checklist** (`docs/REAL-DEVICE-TESTS.md`) now also covers installing on both phones, the coach → phone flow, and offline reloads.
+
+**What broke and what we changed**
+
+- **Lighthouse would not start here.**
+  - Chrome can't be spawned in this environment.
+  - `pnpm dlx lighthouse` failed to load one of its own modules.
+  - The shared PageSpeed Insights quota was used up.
+  - → It ran with `npx`, with `CHROME_PATH` pointing at Playwright's headless shell. Documented in `CLAUDE.md`.
+- **My first a11y test looked for the wrong role** (`alertdialog`): the stop confirmation is a native `<dialog>`. Test fixed; the app was fine.
+- **The brand wrapped onto two lines** in the landing header on phones. → `whitespace-nowrap`.
+
+**Checks:** 190 unit tests and 226 e2e tests pass (4 skipped: service workers on WebKit).
+
+**Pending for Phase 7:** the full real-device pass on Android and iPhone (`docs/REAL-DEVICE-TESTS.md`, sections A–D).

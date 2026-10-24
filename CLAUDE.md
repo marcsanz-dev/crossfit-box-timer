@@ -42,21 +42,21 @@ Deadline: **2026-10-26 23:59 Europe/Madrid**.
 
 ## Stack (verified 2026-10-21)
 
-| Piece                                             | Version                                                           | Notes                                                                                                     |
-| ------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Next.js (App Router, Turbopack, Cache Components) | 16.4.2                                                            | `proxy.ts` replaces `middleware.ts`                                                                       |
-| React                                             | 19.3.1                                                            |                                                                                                           |
-| TypeScript                                        | 6.0.x (strict)                                                    | TS 7 is stable but has no programmatic API until 7.1, which typescript-eslint and Next tooling need       |
-| Node.js / pnpm                                    | 24.x / 12.14.0                                                    | `engines` and `packageManager` are pinned                                                                 |
-| Tailwind CSS                                      | 4.3                                                               | Configured via the `@tailwindcss/turbopack` loader in `next.config.ts` (create-next-app default)          |
-| next-intl                                         | 4.14                                                              | `es` (default, no prefix), `/en`, `/ca`; browser detection off                                            |
-| ESLint                                            | **9.39** + `eslint-config-next` 16.4.2 + `eslint-config-prettier` | Not 10: `eslint-plugin-react`, `jsx-a11y` and `import` don't support ESLint 10 yet                        |
-| Prettier                                          | 3.9 + `prettier-plugin-tailwindcss`                               |                                                                                                           |
-| Vitest / Playwright                               | 5.0 / 1.64                                                        | Playwright projects: desktop, iPhone 17 (WebKit) and Pixel 10 (Chromium), each in portrait and landscape  |
-| Better Auth (+ `@better-auth/drizzle-adapter`)    | 1.7.12 (verified 2026-10-23)                                      | Google only; `user.validateUserInfo` applies the coach rule; CLI package is `auth` (`pnpm auth:generate`) |
-| Drizzle ORM / drizzle-kit + Neon                  | 0.45.4 / 0.31.11, `@neondatabase/serverless` 1.2                  | WebSocket `Pool` (Better Auth needs transactions); Neon branches `dev` and `production` (us-east-1)       |
-| Zod                                               | 4.6                                                               |                                                                                                           |
-| `qrcode` / `nanoid`                               | 1.5.4 / 6.0.2 (verified 2026-10-23)                               | QR as server-side SVG; `customAlphabet` for share codes                                                   |
+| Piece                                               | Version                                                           | Notes                                                                                                     |
+| --------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Next.js (App Router, Turbopack, Cache Components)   | 16.4.2                                                            | `proxy.ts` replaces `middleware.ts`                                                                       |
+| React                                               | 19.3.1                                                            |                                                                                                           |
+| TypeScript                                          | 6.0.x (strict)                                                    | TS 7 is stable but has no programmatic API until 7.1, which typescript-eslint and Next tooling need       |
+| Node.js / pnpm                                      | 24.x / 12.14.0                                                    | `engines` and `packageManager` are pinned                                                                 |
+| Tailwind CSS                                        | 4.3                                                               | Configured via the `@tailwindcss/turbopack` loader in `next.config.ts` (create-next-app default)          |
+| next-intl                                           | 4.14                                                              | `es` (default, no prefix), `/en`, `/ca`; browser detection off                                            |
+| ESLint                                              | **9.39** + `eslint-config-next` 16.4.2 + `eslint-config-prettier` | Not 10: `eslint-plugin-react`, `jsx-a11y` and `import` don't support ESLint 10 yet                        |
+| Prettier                                            | 3.9 + `prettier-plugin-tailwindcss`                               |                                                                                                           |
+| Vitest / Playwright (+ `@axe-core/playwright` 4.14) | 5.0 / 1.64                                                        | Playwright projects: desktop, iPhone 17 (WebKit) and Pixel 10 (Chromium), each in portrait and landscape  |
+| Better Auth (+ `@better-auth/drizzle-adapter`)      | 1.7.12 (verified 2026-10-23)                                      | Google only; `user.validateUserInfo` applies the coach rule; CLI package is `auth` (`pnpm auth:generate`) |
+| Drizzle ORM / drizzle-kit + Neon                    | 0.45.4 / 0.31.11, `@neondatabase/serverless` 1.2                  | WebSocket `Pool` (Better Auth needs transactions); Neon branches `dev` and `production` (us-east-1)       |
+| Zod                                                 | 4.6                                                               |                                                                                                           |
+| `qrcode` / `nanoid`                                 | 1.5.4 / 6.0.2 (verified 2026-10-23)                               | QR as server-side SVG; `customAlphabet` for share codes                                                   |
 
 ## Commands
 
@@ -115,7 +115,7 @@ drizzle/                   # SQL migrations (committed)
 auth.cli.ts                # entry point for the Better Auth CLI only
 ```
 
-Current status per phase: `docs/PLAN.md` §8 "Status". Next up: Phase 6 acceptance on real devices, then Phase 7 (polish, translations, landing, Lighthouse).
+Current status per phase: `docs/PLAN.md` §8 "Status". Next up: Phase 7 acceptance (full real-device pass), then Phase 8 (delivery).
 
 ## Environments and branches
 
@@ -162,4 +162,7 @@ Current status per phase: `docs/PLAN.md` §8 "Status". Next up: Phase 6 acceptan
 - **Service worker (`public/sw.js`)** registers only in production builds, from phone pages. It never stores a page containing `data-no-offline-cache` (the "couldn't load" screen). Bump `VERSION` in it to drop old caches. `e2e/offline.spec.ts` covers it (Chromium only).
 - **One manifest per phone page** (`/app.webmanifest?start=/t/CODE`): the installed app opens the page it was added from, so an iPhone can add a workout to its Home Screen. Only `/t…` paths are accepted as start URLs.
 - **Presets:** every coach reads all presets (Box library); updates and deletes always filter by `ownerId` in SQL, and actions call `refresh()` so the lists re-render.
+- **Accessibility:** `e2e/a11y.spec.ts` runs axe (WCAG 2.2 A/AA) on every public page in light and dark. Every new page or state goes there too. The dimmed (stale) phone preview in the builder is decorative (`aria-hidden`) and exempt from contrast.
+- **Lighthouse locally:** Chrome can't be spawned in this environment and the shared PageSpeed quota runs out. Point `CHROME_PATH` at Playwright's `chrome-headless-shell.exe` and run `npx lighthouse@13.5.0` against `pnpm start` (`pnpm dlx` fails to load one of its modules).
+- **Demo workouts** are per language (`getDemoWorkout(slug, locale)`); exercise names boxes say in English stay in English.
 - **Dependency build scripts** are disabled in `pnpm-workspace.yaml` (`allowBuilds`). Prebuilt binaries are enough.
